@@ -1,4 +1,4 @@
-# Any-Language Wordle Clone
+# Any-Language Wordle Clone - ‘Ōlelo Hawai‘i veersion
 
 ## Changes in this fork
 
