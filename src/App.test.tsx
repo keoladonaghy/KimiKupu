@@ -4,6 +4,6 @@ import App from './App'
 
 test('renders Not Wordle', () => {
   render(<App />)
-  const linkElement = screen.getByText(/Not Wordle - YourLanguageHere/i)
+  const linkElement = screen.getByText(/Hulihua - YourLanguageHere/i)
   expect(linkElement).toBeInTheDocument()
 })
