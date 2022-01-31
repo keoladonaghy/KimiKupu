@@ -59,7 +59,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
                     as="h3"
                     className="text-lg leading-6 font-medium text-gray-900"
                   >
-                    Pehea e pā‘ani ai (How to play)
+                    Pehea e pā‘ani ai - How to play
                   </Dialog.Title>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">
