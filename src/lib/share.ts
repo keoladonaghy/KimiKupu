@@ -1,6 +1,5 @@
 import { getGuessStatuses } from './statuses'
 import { solutionIndex } from './words'
-import { CONFIG } from '../constants/config'
 
 export const shareStatus = (guesses: string[][]) => {
   navigator.clipboard.writeText(
