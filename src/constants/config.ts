@@ -9,7 +9,7 @@ export const CONFIG = {
     //
     // THESE NEXT SETTINGS ARE FOR ADVANCED USERS
     //
-    googleAnalytics: "", // You can use this if you use Google Analytics
+    googleAnalytics: "UA-20295191-3", // You can use this if you use Google Analytics
     shuffle: false, // whether to shuffle the words in the wordlist
     normalization: 'NFC' // whether to apply Unicode normalization to words and orthography - options: 'NFC', 'NFD', 'NKFC', 'NKFD', false
 }
