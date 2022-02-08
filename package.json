@@ -26,10 +26,10 @@
     "scripts": {
         "start": "react-scripts start",
         "predeploy": "npm run build",
-        "deploy": "echo 'hulihua.net' > ./build/CNAME && gh-pages -d build",
+        "deploy": "gh-pages -d build",
         "fix": "prettier --write src",
         "lint": "prettier --check src",
-        "build": "react-scripts build",
+        "build": "react-scripts build && echo 'hulihua.net' > ./build/CNAME",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
         "prepare": "husky install"
