@@ -2,7 +2,6 @@ import { getGuessStatuses } from './statuses'
 import { solutionIndex } from './words'
 import { CONFIG } from '../constants/config'
 
-
 export const shareStatus = (guesses: string[][], lost: boolean) => {
   navigator.clipboard.writeText(
     CONFIG.language +
