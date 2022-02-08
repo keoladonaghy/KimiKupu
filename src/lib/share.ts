@@ -1,15 +1,19 @@
 import { getGuessStatuses } from './statuses'
 import { solutionIndex } from './words'
+import { CONFIG } from '../constants/config'
 
 
-export const shareStatus = (guesses: string[][]) => {
+export const shareStatus = (guesses: string[][], lost: boolean) => {
   navigator.clipboard.writeText(
-    ' Hulihua: He Nane ‘Ōlelo Hawai‘i ' +
-    solutionIndex +
-    ' ' +
-    guesses.length +
-    '/6\n\n' +
-    generateEmojiGrid(guesses)
+    CONFIG.language +
+      ' Hulihua: He Nane ‘Ōlelo Hawai‘i ' +
+      solutionIndex +
+      ' ' +
+      `${lost ? 'X' : guesses.length}` +
+      '/' +
+      CONFIG.tries.toString() +
+      '\n\n' +
+      generateEmojiGrid(guesses)
   )
 }
 
