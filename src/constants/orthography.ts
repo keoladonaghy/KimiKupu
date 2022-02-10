@@ -18,7 +18,7 @@ export const ORTHOGRAPHY = [
   'n',
   'p',
   'w',
-  '‘',
+  '‘', 
 ]
 
 if (CONFIG.normalization) {
