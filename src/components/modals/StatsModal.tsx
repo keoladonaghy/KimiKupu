@@ -53,13 +53,9 @@ export const StatsModal = ({
               See the Definition of {solution}
             </a>
           </div>
-          <div>
+          <div className="text-lg font-medium text-gray-900">
             <b>New word in </b>
-            <Countdown
-              className="text-lg font-medium text-gray-900"
-              date={tomorrow}
-              daysInHours={true}
-            />
+            <Countdown date={tomorrow} daysInHours={true} />
           </div>
           <button
             type="button"
