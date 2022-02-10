@@ -42,22 +42,23 @@ export const StatsModal = ({
       {(isGameLost || isGameWon) && (
         <div className="mt-5 sm:mt-6 columns-1">
           <div>
+            <a
+              className="underline font-medium"
+              href={
+                'http://wehewehe.org/gsdl2.85/cgi-bin/hdict?a=q&q=hahai&fqv=textpukuielbert%252ctextmamaka&q=' +
+                solution
+              }
+            >
+              See the Definition of {solution}
+            </a>
+          </div>
+          <div>
             <h5>New word in</h5>
             <Countdown
               className="text-lg font-medium text-gray-900"
               date={tomorrow}
               daysInHours={true}
             />
-          </div>
-          <div>
-            <a
-              className="underline font-medium"
-              href={
-                'http://wehewehe.org/gsdl2.85/cgi-bin/hdict?a=q&q=hahai&fqv=textpukuielbert%252ctextmamaka&q=' + solution
-              }
-            >
-              See the Definition of {solution}
-            </a>
           </div>
           <button
             type="button"
