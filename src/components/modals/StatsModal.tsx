@@ -40,7 +40,7 @@ export const StatsModal = ({
       </h4>
       <Histogram gameStats={gameStats} />
       {(isGameLost || isGameWon) && (
-        <div className="mt-5 sm:mt-6 columns-1">
+        <div className="mt-5 sm:mt-6 columns-3">
           <div>
             <a
               className="underline font-medium"
