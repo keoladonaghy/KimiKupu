@@ -3,7 +3,7 @@ import { StatBar } from '../stats/StatBar'
 import { Histogram } from '../stats/Histogram'
 import { GameStats } from '../../lib/localStorage'
 import { shareStatus } from '../../lib/share'
-import { tomorrow } from '../../lib/words'
+import { solution, tomorrow } from '../../lib/words'
 import { BaseModal } from './BaseModal'
 
 type Props = {
@@ -59,7 +59,11 @@ export const StatsModal = ({
           >
             Share
           </button>
+          <div><a className="underline font-bold" 
+          href={"http://wehewehe.org/gsdl2.85/cgi-bin/hdict?a=q&q=" + solution}>
+            See the Definition of {solution}</a></div>
         </div>
+        
       )}
     </BaseModal>
   )
