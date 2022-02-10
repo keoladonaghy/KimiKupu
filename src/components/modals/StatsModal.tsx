@@ -59,11 +59,17 @@ export const StatsModal = ({
           >
             Share
           </button>
-          <div><a className="underline font-bold" 
-          href={"http://wehewehe.org/gsdl2.85/cgi-bin/hdict?a=q&q=" + solution}>
-            See the Definition of {solution}</a></div>
+          <div>
+            <a
+              className="underline font-medium"
+              href={
+                'http://wehewehe.org/gsdl2.85/cgi-bin/hdict?a=q&q=' + solution
+              }
+            >
+              See the Definition of {solution}
+            </a>
+          </div>
         </div>
-        
       )}
     </BaseModal>
   )
