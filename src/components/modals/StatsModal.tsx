@@ -53,7 +53,7 @@ export const StatsModal = ({
             </a>
           </div>
           <div>
-            <h5>New word in</h5>
+            <b>New word in</b>
             <Countdown
               className="text-lg font-medium text-gray-900"
               date={tomorrow}
