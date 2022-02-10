@@ -39,6 +39,14 @@ export const StatsModal = ({
         Guess Distribution
       </h4>
       <Histogram gameStats={gameStats} />
+      <div>
+        <a
+          className="underline font-bold"
+          href={'http://wehewehe.org/gsdl2.85/cgi-bin/hdict?a=q&q=' + solution}
+        >
+          See the Definition of {solution}
+        </a>
+      </div>
       {(isGameLost || isGameWon) && (
         <div className="mt-5 sm:mt-6 columns-2">
           <div>
@@ -48,16 +56,6 @@ export const StatsModal = ({
               date={tomorrow}
               daysInHours={true}
             />
-          </div>
-          <div>
-            <a
-              className="underline font-bold"
-              href={
-                'http://wehewehe.org/gsdl2.85/cgi-bin/hdict?a=q&q=' + solution
-              }
-            >
-              See the Definition of {solution}
-            </a>
           </div>
           <button
             type="button"
