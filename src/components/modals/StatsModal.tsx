@@ -45,7 +45,7 @@ export const StatsModal = ({
             <a
               className="underline font-medium"
               href={
-                'http://wehewehe.org/gsdl2.85/cgi-bin/hdict?a=q&q=hahai&fqv=textpukuielbert%252ctextmamaka&q=' +
+                'http://wehewehe.org/gsdl2.85/cgi-bin/hdict?a=q&fqv=textpukuielbert%252ctextmamaka&q=' +
                 solution
               }
             >
