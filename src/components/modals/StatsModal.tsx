@@ -49,6 +49,16 @@ export const StatsModal = ({
               daysInHours={true}
             />
           </div>
+          <div>
+            <a
+              className="underline font-bold"
+              href={
+                'http://wehewehe.org/gsdl2.85/cgi-bin/hdict?a=q&q=' + solution
+              }
+            >
+              See the Definition of {solution}
+            </a>
+          </div>
           <button
             type="button"
             className="mt-2 w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
@@ -59,16 +69,6 @@ export const StatsModal = ({
           >
             Share
           </button>
-          <div>
-            <a
-              className="underline font-medium"
-              href={
-                'http://wehewehe.org/gsdl2.85/cgi-bin/hdict?a=q&q=' + solution
-              }
-            >
-              See the Definition of {solution}
-            </a>
-          </div>
         </div>
       )}
     </BaseModal>
