@@ -377,7 +377,7 @@ export const WORDS = [
   'kiʻia',
   'puoho',
   'loulu',
-  'kīnai',
+  'kīnai'
 ]
 
 if (CONFIG.normalization) {
