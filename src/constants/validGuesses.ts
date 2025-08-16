@@ -1,6 +1,6 @@
 import { CONFIG } from './config'
 
-export const VALIDGUESSES = [  
+export const VALIDGUESSES = [
   'kīloa',
   'māhao',
   'manoa',
