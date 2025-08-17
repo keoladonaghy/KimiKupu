@@ -13,9 +13,7 @@ jobs:
       - name: Prettify code
         uses: creyD/prettier_action@v4.2
         with:
-              prettier_options: --check src
-              file_pattern: *
-              github_token: ${{ secrets.GITHUB_TOKEN }}
-              prettier_version: latest
-        
-              
+          prettier_options: --check src
+          file_pattern: '**/*.{js,ts,jsx,tsx,css,md}'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prettier_version: latest
