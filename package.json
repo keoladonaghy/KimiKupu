@@ -1,7 +1,7 @@
 {
-    "name": "wordle",
-    "version": "0.1.0",
-    "homepage": "https://hulihua.net",
+    "name": "Reo Moana Words",
+    "version": "0.5.0",
+    "homepage": "https://keoladonaghy.github.io/Kimikupu/",
     "private": true,
     "dependencies": {
         "@bcgov/bc-sans": "^1.0.1",
