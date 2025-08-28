@@ -1,4 +1,4 @@
-[
+const validguesses = [
   "a‘a‘a",
   "‘a‘ae",
   "‘āahi",
@@ -1239,4 +1239,6 @@
   "wilia",
   "wīlou",
   ""
-]
+];
+
+export default validguesses;

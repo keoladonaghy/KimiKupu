@@ -1,6 +1,6 @@
-// Import wordlist from language-specific JSON file
+// Import wordlist from language-specific TypeScript file
 import { CONFIG } from './config'
-import wordlistData from './wordlist.haw.json';
+import wordlistData from './wordlist.haw';
 
 export const WORDS = [...wordlistData];
 
