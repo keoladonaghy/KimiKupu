@@ -187,10 +187,12 @@ function App() {
           setSuccessAlert(t('alerts.gameCopied'))
           return setTimeout(() => setSuccessAlert(''), ALERT_TIME_MS)
         }}
+        language={selectedLanguage}
       />
       <AboutModal
         isOpen={isAboutModalOpen}
         handleClose={() => setIsAboutModalOpen(false)}
+        language={selectedLanguage}
       />
       <LanguageSelectionModal
         isOpen={isLanguageModalOpen}

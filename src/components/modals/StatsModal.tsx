@@ -5,6 +5,7 @@ import { GameStats } from '../../lib/localStorage'
 import { shareStatus } from '../../lib/share'
 import { solution, tomorrow } from '../../lib/words'
 import { BaseModal } from './BaseModal'
+import { useTranslation } from '../../constants/translations'
 
 type Props = {
   isOpen: boolean
@@ -14,6 +15,7 @@ type Props = {
   isGameLost: boolean
   isGameWon: boolean
   handleShare: () => void
+  language: string
 }
 
 export const StatsModal = ({
@@ -24,19 +26,22 @@ export const StatsModal = ({
   isGameLost,
   isGameWon,
   handleShare,
+  language,
 }: Props) => {
+  const { t } = useTranslation(language)
+  
   if (gameStats.totalGames <= 0) {
     return (
-      <BaseModal title="Statistics" isOpen={isOpen} handleClose={handleClose}>
+      <BaseModal title={t('modals.stats.title')} isOpen={isOpen} handleClose={handleClose}>
         <StatBar gameStats={gameStats} />
       </BaseModal>
     )
   }
   return (
-    <BaseModal title="Statistics" isOpen={isOpen} handleClose={handleClose}>
+    <BaseModal title={t('modals.stats.title')} isOpen={isOpen} handleClose={handleClose}>
       <StatBar gameStats={gameStats} />
       <h4 className="text-lg leading-6 font-medium text-gray-900">
-        Guess Distribution
+        {t('modals.stats.guessDistribution')}
       </h4>
       <Histogram gameStats={gameStats} />
       {(isGameLost || isGameWon) && (
@@ -50,11 +55,11 @@ export const StatsModal = ({
                 '&fqv=textpukuielbert&af=1&fqf=ED'
               }
             >
-              See the Definition of {solution}
+              {t('modals.stats.seeDefinition')} {solution}
             </a>
           </div>
           <div className="text-lg font-medium text-gray-900">
-            <b>New word in </b>
+            <b>{t('modals.stats.newWordIn')} </b>
             <Countdown date={tomorrow} daysInHours={true} />
           </div>
           <button
@@ -65,7 +70,7 @@ export const StatsModal = ({
               handleShare()
             }}
           >
-            Share
+            {t('modals.stats.share')}
           </button>
         </div>
       )}

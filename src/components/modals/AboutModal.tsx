@@ -1,53 +1,53 @@
 import { CONFIG } from '../../constants/config'
 import { BaseModal } from './BaseModal'
+import { useTranslation } from '../../constants/translations'
 
 type Props = {
   isOpen: boolean
   handleClose: () => void
+  language: string
 }
 
-export const AboutModal = ({ isOpen, handleClose }: Props) => {
+export const AboutModal = ({ isOpen, handleClose, language }: Props) => {
+  const { t } = useTranslation(language)
   return (
-    <BaseModal title="No Kēia Nane Hua‘ōlelo" isOpen={isOpen} handleClose={handleClose}>
+    <BaseModal title={t('modals.about.title')} isOpen={isOpen} handleClose={handleClose}>
       <p className="text-sm text-gray-500">
-        This is an open source clone of the game Wordle adapted to{' '}
-        {CONFIG.language} by{' '}
+        {t('modals.about.description', { language: CONFIG.language })}{' '}
         <a href={CONFIG.authorWebsite} className="underline font-bold">
           {CONFIG.author}
         </a>{' '}
-        - check out{' '}
+        - {t('modals.about.checkoutOriginal')}{' '}
         <a
           href="https://github.com/hannahcode/wordle"
           className="underline font-bold"
         >
-          the original code
+          {t('modals.about.originalCode')}
         </a>{' '}
-        by{' '}
+        {t('modals.about.by')}{' '}
         <a
           href="https://www.hannahmariepark.com/"
           className="underline font-bold"
         >
           Hannah Park
         </a>{' '}
-        or have a look at{' '}
+        {t('modals.about.haveLook')}{' '}
         <a
           href="https://github.com/roedoejet/AnyLanguage-Wordle"
           className="underline font-bold"
         >
-          Aidan Pine's fork
+          {t('modals.about.forkText')}
         </a>{' '}
-        and customize it for another language! The words for this Wordle were
-        sourced from{' '}
+        {t('modals.about.customize')}{' '}
         <a href={CONFIG.wordListSourceLink} className="underline font-bold">
           {CONFIG.wordListSource}
         </a>
-        . Or,
-        {' you can also '}
+        . Or,{' '}
         <a
           href="https://www.powerlanguage.co.uk/wordle/"
           className="underline font-bold"
         >
-          play the original here
+          {t('modals.about.playOriginal')}
         </a>
       </p>
     </BaseModal>
