@@ -1,4 +1,5 @@
 name: Lint
+
 on:
   pull_request:
   push:
@@ -9,11 +10,23 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Prettify code
-        uses: creyD/prettier_action@v4.2
+      - uses: actions/checkout@v3
+
+      # Install Node.js so Prettier can run reliably
+      - uses: actions/setup-node@v4
         with:
-          prettier_options: --check src
-          file_pattern: '**/*.{js,ts,jsx,tsx,css,md}'
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          prettier_version: latest
+          node-version: '20'
+
+      # Optional: Install dependencies if you use a local Prettier config or plugins
+      # - run: npm ci
+
+      - name: Run Prettier (auto-fix style issues)
+        run: npx prettier --write "src/**/*.{js,ts,jsx,tsx,css,md}"
+
+      # Optionally, fail the workflow if there are uncommitted changes after Prettier runs
+      # - name: Check for uncommitted changes
+      #   run: |
+      #     if [[ `git status --porcelain` ]]; then
+      #       echo "Code style issues fixed by Prettier. Please commit the changes."
+      #       exit 1
+      #     fi
