@@ -147,5 +147,6 @@ const maoriWords = [
   "whiti",
   "whitu",
   "whiua",
+]; 
 
 export default maoriWords;
