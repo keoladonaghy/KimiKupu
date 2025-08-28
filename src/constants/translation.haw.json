@@ -1,0 +1,52 @@
+{
+  "app": {
+    "title": "Hulihua - He Nane 'Ōlelo Hawai'i",
+    "aboutButton": "No kēia nane hua'ōlelo"
+  },
+  "alerts": {
+    "notEnoughLetters": "He liʻiliʻi nā hua",
+    "wordNotFound": "ʻAʻole i loaʻa ka hua",
+    "theWordWas": "ʻO ka hua",
+    "gameCopied": "Ua kope ʻia ka pāʻani"
+  },
+  "modals": {
+    "info": {
+      "title": "Pehea e pā'ani ai - How to play",
+      "description": "E koho i ka hua ma {tries} hoʻāʻo. Ma hope o kēlā me kēia hoʻāʻo, e loli ka waihoʻoluʻu o nā papa e hōʻike ai i ka pili o kāu hoʻāʻo i ka hua.",
+      "correctExample": "Aia ka hua L ma ka hua a i ka wahi pololei.",
+      "presentExample": "Aia ka hua O ma ka hua akā ma kekahi wahi ʻē.",
+      "absentExample": "ʻAʻole ka hua N ma ka hua ma kekahi wahi."
+    },
+    "about": {
+      "title": "No Kēia Nane Hua'ōlelo",
+      "description": "He kope kēia o ka pāʻani Wordle i hoʻololi ʻia no {language} e",
+      "checkoutOriginal": "e nānā",
+      "originalCode": "ka kumu kōnane",
+      "by": "na",
+      "haveLook": "a i ʻole e nānā",
+      "forkText": "ka lālā o Aidan Pine",
+      "customize": "a hoʻololi no kekahi ʻōlelo ʻē! Ua lawe ʻia nā hua no kēia Wordle mai",
+      "playOriginal": "pāʻani i ka mea kumu ma ʻaneʻi"
+    },
+    "language": {
+      "title": "Koho ʻŌlelo",
+      "hawaiian": "Ōlelo Hawai'i",
+      "maori": "Te Reo Māori",
+      "english": "English",
+      "cancel": "Hoʻoki",
+      "ok": "ʻAe"
+    },
+    "stats": {
+      "title": "Helu",
+      "guessDistribution": "Māhele Koho",
+      "newWordIn": "Hua hou ma",
+      "seeDefinition": "Nānā i ka wehewehe o",
+      "share": "Kaʻana"
+    }
+  },
+  "winMessages": [
+    "Maika'i!",
+    "Maika'i loa!",
+    "Uihā!"
+  ]
+}

@@ -1,22 +1,25 @@
 import { Cell } from '../grid/Cell'
 import { BaseModal } from './BaseModal'
 import { CONFIG } from '../../constants/config'
+import { useTranslation } from '../../constants/translations'
 
 type Props = {
   isOpen: boolean
   handleClose: () => void
+  language: string
 }
 
-export const InfoModal = ({ isOpen, handleClose }: Props) => {
+export const InfoModal = ({ isOpen, handleClose, language }: Props) => {
+  const { t } = useTranslation(language)
   return (
     <BaseModal
-      title="Pehea e pā‘ani ai - How to play"
+      title={t('modals.info.title')}
       isOpen={isOpen}
       handleClose={handleClose}
     >
       <p className="text-sm text-gray-500">
-        Guess the word in {CONFIG.tries} tries. After each guess, the color of
-        the tiles will change to show how close your guess was to the word.
+        {t('modals.info.description', { tries: CONFIG.tries })}
+        {t('modals.info.description', { tries: CONFIG.tries })}
       </p>
 
       <div className="flex justify-center mb-1 mt-4">
@@ -27,7 +30,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
         <Cell value="I" />
       </div>
       <p className="text-sm text-gray-500">
-        The letter L is in the word and in the correct spot.
+        {t('modals.info.correctExample')}
       </p>
       <div className="flex justify-center mb-1 mt-4">
         <Cell value="A" />
@@ -37,7 +40,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
         <Cell value="A" />
       </div>
       <p className="text-sm text-gray-500">
-        The letter O is in the word but in the wrong spot.
+        {t('modals.info.presentExample')}
       </p>
       <div className="flex justify-center mb-1 mt-4">
         <Cell value="‘" />
@@ -47,7 +50,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
         <Cell value="A" />
       </div>
       <p className="text-sm text-gray-500">
-        The letter N is not in the word in any spot.
+        {t('modals.info.absentExample')}
       </p>
     </BaseModal>
   )

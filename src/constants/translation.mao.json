@@ -1,0 +1,52 @@
+{
+  "app": {
+    "title": "Hulihua - He Kēmu Kupu Māori",
+    "aboutButton": "Mō tēnei kēmu"
+  },
+  "alerts": {
+    "notEnoughLetters": "Kāore i roa ngā reta",
+    "wordNotFound": "Kāore i kitea te kupu",
+    "theWordWas": "Ko te kupu",
+    "gameCopied": "Kua kopia te kēmu"
+  },
+  "modals": {
+    "info": {
+      "title": "Me pēhea e takaro ai",
+      "description": "Matapakia te kupu i roto i {tries} ngā whakamātau. I muri i ia whakamātau, ka huringa te tae o ngā mata hei whakaatu i te tata o tō whakamātau ki te kupu.",
+      "correctExample": "Kei roto te reta L i te kupu ā kei te wāhi tika.",
+      "presentExample": "Kei roto te reta O i te kupu engari kāore i te wāhi tika.",
+      "absentExample": "Kāore te reta N i roto i te kupu i tētahi wāhi rānei."
+    },
+    "about": {
+      "title": "Mō tēnei kēmu kupu",
+      "description": "He kape tēnei o te kēmu Wordle kua whakaritea mō {language} nā",
+      "checkoutOriginal": "tirohia",
+      "originalCode": "te waehere taketake",
+      "by": "nā",
+      "haveLook": "rānei tirohia",
+      "forkText": "te peka a Aidan Pine",
+      "customize": "ā whakaahuatia mō tētahi atu reo! I tangohia ngā kupu mō tēnei Wordle mai",
+      "playOriginal": "takaro i te taketake i konei"
+    },
+    "language": {
+      "title": "Kōwhiri Reo",
+      "hawaiian": "Ōlelo Hawai'i",
+      "maori": "Te Reo Māori",
+      "english": "English",
+      "cancel": "Whakakore",
+      "ok": "Āe"
+    },
+    "stats": {
+      "title": "Tatauranga",
+      "guessDistribution": "Tohatoha Matapaki",
+      "newWordIn": "Kupu hou i roto i",
+      "seeDefinition": "Tirohia te whakamārama o",
+      "share": "Tohaina"
+    }
+  },
+  "winMessages": [
+    "Pai rawa!",
+    "Tino pai!",
+    "Mīharo!"
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "app": {
+    "title": "Hulihua - Hawaiian Word Game",
+    "aboutButton": "About this game"
+  },
+  "alerts": {
+    "notEnoughLetters": "Not enough letters",
+    "wordNotFound": "Word not found",
+    "theWordWas": "The word was",
+    "gameCopied": "Game copied to clipboard"
+  },
+  "modals": {
+    "info": {
+      "title": "How to play",
+      "description": "Guess the word in {tries} tries. After each guess, the color of the tiles will change to show how close your guess was to the word.",
+      "correctExample": "The letter L is in the word and in the correct spot.",
+      "presentExample": "The letter O is in the word but in the wrong spot.",
+      "absentExample": "The letter N is not in the word in any spot."
+    },
+    "about": {
+      "title": "About this word game",
+      "description": "This is an open source clone of the game Wordle adapted to {language} by",
+      "checkoutOriginal": "check out",
+      "originalCode": "the original code",
+      "by": "by",
+      "haveLook": "or have a look at",
+      "forkText": "Aidan Pine's fork",
+      "customize": "and customize it for another language! The words for this Wordle were sourced from",
+      "playOriginal": "play the original here"
+    },
+    "language": {
+      "title": "Select Language",
+      "hawaiian": "Ōlelo Hawai'i",
+      "maori": "Te Reo Māori",
+      "english": "English",
+      "cancel": "Cancel",
+      "ok": "OK"
+    },
+    "stats": {
+      "title": "Statistics",
+      "guessDistribution": "Guess Distribution",
+      "newWordIn": "New word in",
+      "seeDefinition": "See the Definition of",
+      "share": "Share"
+    }
+  },
+  "winMessages": [
+    "Great!",
+    "Excellent!",
+    "Amazing!"
+  ]
+}
