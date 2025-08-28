@@ -33,3 +33,13 @@ export const loadStatsFromLocalStorage = () => {
   const stats = localStorage.getItem(gameStatKey)
   return stats ? (JSON.parse(stats) as GameStats) : null
 }
+
+const languageKey = 'selectedLanguage'
+
+export const saveLanguageToLocalStorage = (language: string) => {
+  localStorage.setItem(languageKey, language)
+}
+
+export const loadLanguageFromLocalStorage = () => {
+  return localStorage.getItem(languageKey) || 'hawaiian'
+}
