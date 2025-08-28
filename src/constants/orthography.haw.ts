@@ -17,11 +17,6 @@ const orthography = [
   'p',
   'w',
   'ʻ',
-  'H',
-  'K',
-  'L',
-  'M',
-  'N',
-  'P',
-  'W',
 ]
+
+export default orthography
