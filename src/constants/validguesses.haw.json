@@ -1,4 +1,4 @@
-const hawaiianWords = [
+[
   "a‘a‘a",
   "‘a‘ae",
   "‘āahi",
@@ -39,8 +39,8 @@ const hawaiianWords = [
   "akaka",
   "akakū",
   "‘akau",
-  "‘ākea",
   "‘ākau",
+  "‘ākea",
   "akēkē",
   "akena",
   "‘akeu",
@@ -1238,6 +1238,5 @@ const hawaiianWords = [
   "weweo",
   "wilia",
   "wīlou",
-];
-
-export default hawaiianWords;
+  ""
+]
