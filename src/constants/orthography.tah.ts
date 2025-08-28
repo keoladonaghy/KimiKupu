@@ -1,0 +1,23 @@
+const orthography = [
+  'a',
+  'ā',
+  'e',
+  'ē',
+  'i',
+  'ī',
+  'o',
+  'ō',
+  'u',
+  'ū',
+  'h',
+  'f',
+  'm',
+  'n',
+  'p',
+  'r',
+  't',
+  'v',
+  'ʻ',
+]
+
+export default orthography

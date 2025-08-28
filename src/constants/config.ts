@@ -1,4 +1,4 @@
-// Import configuration from language-specific JSON file
-import configData from './config.haw.json';
+// Import configuration from language-specific TypeScript file
+import configData from './config.haw'
 
-export const CONFIG = configData;
+export const CONFIG = configData
