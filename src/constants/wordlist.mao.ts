@@ -1,4 +1,4 @@
-[
+const wordlist = [
   "aituā",
   "anake",
   "āpōpō",
@@ -148,4 +148,6 @@
   "whitu",
   "whiua",
   ""
-]
+];
+
+export default wordlist;

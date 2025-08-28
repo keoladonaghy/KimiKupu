@@ -1,6 +1,6 @@
-// Import valid guesses from language-specific JSON file
+// Import valid guesses from language-specific TypeScript file
 import { CONFIG } from './config'
-import validGuessesData from './validguesses.haw.json';
+import validGuessesData from './validguesses.haw';
 
 export const VALIDGUESSES = [...validGuessesData];
 

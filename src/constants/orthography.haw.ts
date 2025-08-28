@@ -1,7 +1,7 @@
-[
+const orthography = [
   "a",
   "ā",
-  "e", 
+  "e",
   "ē",
   "i",
   "ī",
@@ -34,4 +34,6 @@
   "N",
   "P",
   "W"
-]
+];
+
+export default orthography;

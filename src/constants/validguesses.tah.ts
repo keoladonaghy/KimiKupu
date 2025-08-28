@@ -1,4 +1,4 @@
-[
+const validguesses = [
   "āna‘e",
   "anapo",
   "afata",
@@ -94,4 +94,6 @@
   "Upo‘o",
   "vaiho",
   ""
-]
+];
+
+export default validguesses;
