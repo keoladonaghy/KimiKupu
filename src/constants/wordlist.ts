@@ -1,11 +1,14 @@
 // Import wordlist from language-specific TypeScript file
 import { CONFIG } from './config'
-import wordlistData from './wordlist.haw';
+import wordlistData from './wordlist.haw'
 
-export const WORDS = [...wordlistData];
+export const WORDS = [...wordlistData]
 
 if (CONFIG.normalization) {
-  WORDS.forEach((val, i) => {WORDS[i] = val.normalize(CONFIG.normalization as string); WORDS[i] = val.replaceAll('\u2018', "\u02bb")})
+  WORDS.forEach((val, i) => {
+    WORDS[i] = val.normalize(CONFIG.normalization as string)
+    WORDS[i] = WORDS[i].replaceAll('\u2018', '\u02bb').replaceAll("'", '\u02bb')
+  })
 }
 
 function shuffle(array: any[]) {

@@ -1,8 +1,8 @@
 // Import orthography from language-specific TypeScript file
 import { CONFIG } from './config'
-import orthographyData from './orthography.haw';
+import orthographyData from './orthography.haw'
 
-export const ORTHOGRAPHY = [...orthographyData];
+export const ORTHOGRAPHY = [...orthographyData]
 
 if (CONFIG.normalization) {
   ORTHOGRAPHY.forEach(
