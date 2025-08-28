@@ -93,6 +93,6 @@ const tahitianWords = [
   "uaina",
   "Upo‘o",
   "vaiho",
-];   
+];
 
 export default tahitianWords;
