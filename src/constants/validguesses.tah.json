@@ -1,4 +1,4 @@
-const tahitianWords = [
+[
   "āna‘e",
   "anapo",
   "afata",
@@ -93,6 +93,5 @@ const tahitianWords = [
   "uaina",
   "Upo‘o",
   "vaiho",
-];
-
-export default tahitianWords;
+  ""
+]

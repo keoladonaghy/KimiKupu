@@ -1,4 +1,4 @@
-const maoriWords = [
+[
   "aituā",
   "anake",
   "āpōpō",
@@ -147,6 +147,5 @@ const maoriWords = [
   "whiti",
   "whitu",
   "whiua",
-]; 
-
-export default maoriWords;
+  ""
+]
