@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { BaseModal } from './BaseModal'
 
 const INTERFACE_LANGUAGES = [
@@ -22,9 +22,16 @@ type LanguageSettings = {
 type Props = {
   isOpen: boolean
   handleClose: () => void
+  selectedLanguage: string
+  onLanguageChange: (language: string) => void
 }
 
-export const LanguageSelectionModal = ({ isOpen, handleClose }: Props) => {
+export const LanguageSelectionModal = ({
+  isOpen,
+  handleClose,
+  selectedLanguage,
+  onLanguageChange,
+}: Props) => {
   // Load from localStorage or use defaults
   const getInitialSettings = (): LanguageSettings => {
     const stored = localStorage.getItem(LOCAL_STORAGE_KEY)
@@ -33,13 +40,20 @@ export const LanguageSelectionModal = ({ isOpen, handleClose }: Props) => {
         return JSON.parse(stored)
       } catch {}
     }
-    return { interfaceLanguage: 'maori', gameLanguage: 'hawaiian' }
+    return { interfaceLanguage: selectedLanguage || 'maori', gameLanguage: 'hawaiian' }
   }
 
   const [settings, setSettings] = useState<LanguageSettings>(getInitialSettings())
 
+  // Update settings.interfaceLanguage if selectedLanguage prop changes
+  useEffect(() => {
+    setSettings(s => ({ ...s, interfaceLanguage: selectedLanguage }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedLanguage])
+
   const handleInterfaceChange = (val: string) => {
     setSettings(s => ({ ...s, interfaceLanguage: val }))
+    onLanguageChange(val)
   }
 
   const handleGameChange = (val: string) => {
@@ -53,6 +67,7 @@ export const LanguageSelectionModal = ({ isOpen, handleClose }: Props) => {
 
   const handleOK = () => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings))
+    onLanguageChange(settings.interfaceLanguage)
     handleClose()
   }
 
