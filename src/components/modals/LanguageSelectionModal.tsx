@@ -40,24 +40,29 @@ export const LanguageSelectionModal = ({
         return JSON.parse(stored)
       } catch {}
     }
-    return { interfaceLanguage: selectedLanguage || 'maori', gameLanguage: 'hawaiian' }
+    return {
+      interfaceLanguage: selectedLanguage || 'maori',
+      gameLanguage: 'hawaiian',
+    }
   }
 
-  const [settings, setSettings] = useState<LanguageSettings>(getInitialSettings())
+  const [settings, setSettings] = useState<LanguageSettings>(
+    getInitialSettings()
+  )
 
   // Update settings.interfaceLanguage if selectedLanguage prop changes
   useEffect(() => {
-    setSettings(s => ({ ...s, interfaceLanguage: selectedLanguage }))
+    setSettings((s) => ({ ...s, interfaceLanguage: selectedLanguage }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLanguage])
 
   const handleInterfaceChange = (val: string) => {
-    setSettings(s => ({ ...s, interfaceLanguage: val }))
+    setSettings((s) => ({ ...s, interfaceLanguage: val }))
     onLanguageChange(val)
   }
 
   const handleGameChange = (val: string) => {
-    setSettings(s => ({ ...s, gameLanguage: val }))
+    setSettings((s) => ({ ...s, gameLanguage: val }))
   }
 
   const handleCancel = () => {
@@ -72,13 +77,17 @@ export const LanguageSelectionModal = ({
   }
 
   return (
-    <BaseModal title="Select Language" isOpen={isOpen} handleClose={handleCancel}>
+    <BaseModal
+      title="Select Language"
+      isOpen={isOpen}
+      handleClose={handleCancel}
+    >
       <div className="space-y-6 px-2">
         {/* Interface Language */}
         <div>
           <div className="font-bold mb-2 text-left">Interface Language</div>
           <div className="flex flex-col space-y-2">
-            {INTERFACE_LANGUAGES.map(lang => (
+            {INTERFACE_LANGUAGES.map((lang) => (
               <label key={lang.value} className="flex items-center">
                 <input
                   type="radio"
@@ -97,7 +106,7 @@ export const LanguageSelectionModal = ({
         <div>
           <div className="font-bold mb-2 text-left">Game Language</div>
           <div className="flex flex-col space-y-2">
-            {GAME_LANGUAGES.map(lang => (
+            {GAME_LANGUAGES.map((lang) => (
               <label key={lang.value} className="flex items-center">
                 <input
                   type="radio"
