@@ -1,4 +1,6 @@
-const hawaiianWords = [
+import { CONFIG } from './config'
+
+export const VALIDGUESSES = [
   "a‘a‘a",
   "‘a‘ae",
   "‘āahi",
@@ -1240,4 +1242,8 @@ const hawaiianWords = [
   "wīlou",
 ];
 
-export default hawaiianWords;
+if (CONFIG.normalization) {
+  VALIDGUESSES.forEach(
+    (val, i) => {VALIDGUESSES[i] = val.normalize(CONFIG.normalization); VALIDGUESSES[i] = val.replaceAll('\u2018', "\u02bb")}
+  )
+}

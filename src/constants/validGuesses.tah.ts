@@ -1,4 +1,6 @@
-const tahitianWords = [
+import { CONFIG } from './config'
+
+export const VALIDGUESSES = [
   "āna‘e",
   "anapo",
   "afata",
@@ -95,4 +97,8 @@ const tahitianWords = [
   "vaiho",
 ];
 
-export default tahitianWords;
+if (CONFIG.normalization) {
+  VALIDGUESSES.forEach(
+    (val, i) => {VALIDGUESSES[i] = val.normalize(CONFIG.normalization); VALIDGUESSES[i] = val.replaceAll('\u2018', "\u02bb")}
+  )
+}
