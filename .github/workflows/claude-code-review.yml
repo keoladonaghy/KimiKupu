@@ -1,0 +1,70 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        pip install requests
+
+    - name: Send diff to Claude API for review
+      run: |
+        import os
+        import requests
+
+        # Fetch the pull request diff
+        PR_URL = os.environ['GITHUB_API_URL'] + "/repos/" + os.environ['GITHUB_REPOSITORY'] + "/pulls/" + os.environ['GITHUB_REF'].split('/')[2] + "/files"
+        headers = {'Authorization': f"token {os.environ['GITHUB_TOKEN']}"}
+        response = requests.get(PR_URL, headers=headers)
+        pr_files = response.json()
+
+        # Prepare the diff text
+        diff_text = ""
+        for file in pr_files:
+            diff_text += file.get('patch', '')  # Get the diff for each file
+
+        # Send the diff to Claude API for code review
+        CLAUDE_API_KEY = os.getenv('CLAUDE_API_KEY')  # Store Claude API Key securely
+        url = "https://api.anthropic.com/v1/claude/code-review"  # This is a placeholder; use the correct endpoint
+        headers = {
+            'Authorization': f'Bearer {CLAUDE_API_KEY}',
+            'Content-Type': 'application/json',
+        }
+
+        data = {
+            "model": "claude-1",  # Specify the Claude model you want to use
+            "messages": [
+                {"role": "system", "content": "You are an expert code reviewer."},
+                {"role": "user", "content": f"Review the following code diff: {diff_text}"}
+            ],
+            "temperature": 0.5,
+            "max_tokens": 1000,
+        }
+
+        review_response = requests.post(url, headers=headers, json=data)
+        review_result = review_response.json()
+
+        # Comment the review back in the PR
+        review_comments = review_result.get('choices', [{}])[0].get('message', {}).get('content', 'No feedback')
+        comment_url = os.environ['GITHUB_API_URL'] + "/repos/" + os.environ['GITHUB_REPOSITORY'] + "/issues/" + os.environ['GITHUB_REF'].split('/')[2] + "/comments"
+        comment_data = {
+            "body": review_comments
+        }
+        requests.post(comment_url, json=comment_data, headers=headers)
