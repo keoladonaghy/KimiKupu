@@ -43,3 +43,23 @@ export const saveLanguageToLocalStorage = (language: string) => {
 export const loadLanguageFromLocalStorage = () => {
   return localStorage.getItem(languageKey) || 'hawaiian'
 }
+
+// New localStorage functions for interface and game language
+const interfaceLanguageKey = 'interfaceLanguage'
+const gameLanguageKey = 'gameLanguage'
+
+export const saveInterfaceLanguageToLocalStorage = (language: string) => {
+  localStorage.setItem(interfaceLanguageKey, language)
+}
+
+export const loadInterfaceLanguageFromLocalStorage = () => {
+  return localStorage.getItem(interfaceLanguageKey) || 'maori'
+}
+
+export const saveGameLanguageToLocalStorage = (language: string) => {
+  localStorage.setItem(gameLanguageKey, language)
+}
+
+export const loadGameLanguageFromLocalStorage = () => {
+  return localStorage.getItem(gameLanguageKey) || 'hawaiian'
+}

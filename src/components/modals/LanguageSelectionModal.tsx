@@ -27,7 +27,11 @@ export const LanguageSelectionModal = ({
   }
 
   return (
-    <BaseModal title="Select Language" isOpen={isOpen} handleClose={handleCancel}>
+    <BaseModal
+      title="Select Language"
+      isOpen={isOpen}
+      handleClose={handleCancel}
+    >
       <div className="mt-4">
         <div className="space-y-3">
           <label className="flex items-center">
@@ -53,7 +57,7 @@ export const LanguageSelectionModal = ({
             <span className="ml-3 text-sm text-gray-700">Te Reo Māori</span>
           </label>
         </div>
-        
+
         <div className="mt-6 flex justify-between">
           <button
             type="button"
