@@ -149,4 +149,5 @@ const maoriWords = [
   "whiua",
 ]; 
 
+export const WORDS = maoriWords;
 export default maoriWords;

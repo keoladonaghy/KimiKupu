@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BaseModal } from './BaseModal'
+import { useWordList, WordListLanguage } from '../../contexts/WordListContext'
 
 const INTERFACE_LANGUAGES = [
   { value: 'hawaiian', label: 'Hawaiian' },
@@ -24,6 +25,7 @@ type Props = {
   handleClose: () => void
   selectedLanguage: string
   onLanguageChange: (language: string) => void
+  onGameLanguageChange?: (language: WordListLanguage) => void
 }
 
 export const LanguageSelectionModal = ({
@@ -31,7 +33,9 @@ export const LanguageSelectionModal = ({
   handleClose,
   selectedLanguage,
   onLanguageChange,
+  onGameLanguageChange,
 }: Props) => {
+  const { currentLanguage: currentWordListLanguage, setLanguage: setWordListLanguage, error: wordListError } = useWordList()
   // Load from localStorage or use defaults
   const getInitialSettings = (): LanguageSettings => {
     const stored = localStorage.getItem(LOCAL_STORAGE_KEY)
@@ -40,7 +44,7 @@ export const LanguageSelectionModal = ({
         return JSON.parse(stored)
       } catch {}
     }
-    return { interfaceLanguage: selectedLanguage || 'maori', gameLanguage: 'hawaiian' }
+    return { interfaceLanguage: selectedLanguage || 'maori', gameLanguage: currentWordListLanguage }
   }
 
   const [settings, setSettings] = useState<LanguageSettings>(getInitialSettings())
@@ -65,9 +69,18 @@ export const LanguageSelectionModal = ({
     handleClose()
   }
 
-  const handleOK = () => {
+  const handleOK = async () => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings))
     onLanguageChange(settings.interfaceLanguage)
+    
+    // Apply game language change
+    if (settings.gameLanguage !== currentWordListLanguage) {
+      await setWordListLanguage(settings.gameLanguage as WordListLanguage)
+      if (onGameLanguageChange) {
+        onGameLanguageChange(settings.gameLanguage as WordListLanguage)
+      }
+    }
+    
     handleClose()
   }
 
@@ -112,6 +125,12 @@ export const LanguageSelectionModal = ({
             ))}
           </div>
         </div>
+        {/* Word List Error Display */}
+        {wordListError && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            <p className="text-sm">{wordListError}</p>
+          </div>
+        )}
         {/* Mahalo Note */}
         <div className="text-xs text-gray-500 mt-2 text-left">
           Mahalo to Mary Boyce for the Māori word list used in this game.

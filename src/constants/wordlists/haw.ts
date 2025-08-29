@@ -1240,4 +1240,5 @@ const hawaiianWords = [
   "wīlou",
 ];
 
+export const WORDS = hawaiianWords;
 export default hawaiianWords;
