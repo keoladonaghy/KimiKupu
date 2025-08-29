@@ -10,6 +10,7 @@ const INTERFACE_LANGUAGES = [
 const GAME_LANGUAGES = [
   { value: 'hawaiian', label: 'Hawaiian' },
   { value: 'maori', label: 'Māori' },
+  { value: 'tahitian', label: 'Tahitian' },
 ]
 
 const LOCAL_STORAGE_KEY = 'kimiKupuLanguageSettings'
@@ -24,6 +25,8 @@ type Props = {
   handleClose: () => void
   selectedLanguage: string
   onLanguageChange: (language: string) => void
+  gameLanguage: string
+  onGameLanguageChange: (language: string) => void
 }
 
 export const LanguageSelectionModal = ({
@@ -31,6 +34,8 @@ export const LanguageSelectionModal = ({
   handleClose,
   selectedLanguage,
   onLanguageChange,
+  gameLanguage,
+  onGameLanguageChange,
 }: Props) => {
   // Load from localStorage or use defaults
   const getInitialSettings = (): LanguageSettings => {
@@ -40,24 +45,36 @@ export const LanguageSelectionModal = ({
         return JSON.parse(stored)
       } catch {}
     }
-    return { interfaceLanguage: selectedLanguage || 'maori', gameLanguage: 'hawaiian' }
+    return {
+      interfaceLanguage: selectedLanguage || 'maori',
+      gameLanguage: gameLanguage || 'hawaiian',
+    }
   }
 
-  const [settings, setSettings] = useState<LanguageSettings>(getInitialSettings())
+  const [settings, setSettings] = useState<LanguageSettings>(
+    getInitialSettings()
+  )
 
   // Update settings.interfaceLanguage if selectedLanguage prop changes
   useEffect(() => {
-    setSettings(s => ({ ...s, interfaceLanguage: selectedLanguage }))
+    setSettings((s) => ({ ...s, interfaceLanguage: selectedLanguage }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLanguage])
 
+  // Update settings.gameLanguage if gameLanguage prop changes
+  useEffect(() => {
+    setSettings((s) => ({ ...s, gameLanguage: gameLanguage }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameLanguage])
+
   const handleInterfaceChange = (val: string) => {
-    setSettings(s => ({ ...s, interfaceLanguage: val }))
+    setSettings((s) => ({ ...s, interfaceLanguage: val }))
     onLanguageChange(val)
   }
 
   const handleGameChange = (val: string) => {
-    setSettings(s => ({ ...s, gameLanguage: val }))
+    setSettings((s) => ({ ...s, gameLanguage: val }))
+    onGameLanguageChange(val)
   }
 
   const handleCancel = () => {
@@ -68,17 +85,22 @@ export const LanguageSelectionModal = ({
   const handleOK = () => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings))
     onLanguageChange(settings.interfaceLanguage)
+    onGameLanguageChange(settings.gameLanguage)
     handleClose()
   }
 
   return (
-    <BaseModal title="Select Language" isOpen={isOpen} handleClose={handleCancel}>
+    <BaseModal
+      title="Select Language"
+      isOpen={isOpen}
+      handleClose={handleCancel}
+    >
       <div className="space-y-6 px-2">
         {/* Interface Language */}
         <div>
           <div className="font-bold mb-2 text-left">Interface Language</div>
           <div className="flex flex-col space-y-2">
-            {INTERFACE_LANGUAGES.map(lang => (
+            {INTERFACE_LANGUAGES.map((lang) => (
               <label key={lang.value} className="flex items-center">
                 <input
                   type="radio"
@@ -97,7 +119,7 @@ export const LanguageSelectionModal = ({
         <div>
           <div className="font-bold mb-2 text-left">Game Language</div>
           <div className="flex flex-col space-y-2">
-            {GAME_LANGUAGES.map(lang => (
+            {GAME_LANGUAGES.map((lang) => (
               <label key={lang.value} className="flex items-center">
                 <input
                   type="radio"

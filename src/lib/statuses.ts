@@ -17,7 +17,7 @@ export const getStatuses = (
   guesses.forEach((word) => {
     word.forEach((letter, i) => {
       const letterNorm = normalize(letter)
-      const solutionCharNorms = solutionChars.map(l => normalize(l))
+      const solutionCharNorms = solutionChars.map((l) => normalize(l))
 
       if (!solutionCharNorms.includes(letterNorm)) {
         // make status absent
@@ -59,7 +59,7 @@ export const getGuessStatuses = (guess: string[]): CharStatus[] => {
   splitGuess.forEach((letter, i) => {
     if (statuses[i]) return
 
-    const splitSolutionNorms = splitSolution.map(l => normalize(l))
+    const splitSolutionNorms = splitSolution.map((l) => normalize(l))
     if (!splitSolutionNorms.includes(normalize(letter))) {
       // handles the absent case
       statuses[i] = 'absent'

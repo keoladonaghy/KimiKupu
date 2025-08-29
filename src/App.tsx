@@ -18,11 +18,26 @@ import {
   loadLanguageFromLocalStorage,
   saveLanguageToLocalStorage,
 } from './lib/localStorage'
+import { loadOrthography } from './lib/orthographyLoader'
 
 import { CONFIG } from './constants/config'
 import ReactGA from 'react-ga'
 import '@bcgov/bc-sans/css/BCSans.css'
 const ALERT_TIME_MS = 2000
+
+const LOCAL_STORAGE_KEY = 'kimiKupuLanguageSettings'
+
+// Load game language from localStorage
+const loadGameLanguageFromLocalStorage = () => {
+  const stored = localStorage.getItem(LOCAL_STORAGE_KEY)
+  if (stored) {
+    try {
+      const settings = JSON.parse(stored)
+      return settings.gameLanguage || 'hawaiian'
+    } catch {}
+  }
+  return 'hawaiian'
+}
 
 function App() {
   const [currentGuess, setCurrentGuess] = useState<Array<string>>([])
@@ -33,6 +48,10 @@ function App() {
   const [selectedLanguage, setSelectedLanguage] = useState(() =>
     loadLanguageFromLocalStorage()
   )
+  const [gameLanguage, setGameLanguage] = useState(() =>
+    loadGameLanguageFromLocalStorage()
+  )
+  const [orthography, setOrthography] = useState<string[]>([])
   const [isNotEnoughLetters, setIsNotEnoughLetters] = useState(false)
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false)
   const [isWordNotFoundAlertOpen, setIsWordNotFoundAlertOpen] = useState(false)
@@ -66,6 +85,15 @@ function App() {
   }, [TRACKING_ID])
 
   const [stats, setStats] = useState(() => loadStats())
+
+  // Load orthography when game language changes
+  useEffect(() => {
+    const loadOrthographyForLanguage = async () => {
+      const newOrthography = await loadOrthography(gameLanguage)
+      setOrthography(newOrthography)
+    }
+    loadOrthographyForLanguage()
+  }, [gameLanguage])
 
   useEffect(() => {
     saveGameStateToLocalStorage({ guesses, solution })
@@ -147,6 +175,10 @@ function App() {
     saveLanguageToLocalStorage(language)
   }
 
+  const handleGameLanguageChange = (language: string) => {
+    setGameLanguage(language)
+  }
+
   return (
     <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
       <div className="flex w-80 mx-auto items-center mb-8">
@@ -172,6 +204,7 @@ function App() {
         onDelete={onDelete}
         onEnter={onEnter}
         guesses={guesses}
+        orthography={orthography}
       />
       <InfoModal
         isOpen={isInfoModalOpen}
@@ -198,6 +231,8 @@ function App() {
         handleClose={() => setIsLanguageModalOpen(false)}
         selectedLanguage={selectedLanguage}
         onLanguageChange={handleLanguageChange}
+        gameLanguage={gameLanguage}
+        onGameLanguageChange={handleGameLanguageChange}
       />
 
       <button

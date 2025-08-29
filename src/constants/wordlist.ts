@@ -927,7 +927,10 @@ export const WORDS = [
 ]
 
 if (CONFIG.normalization) {
-  WORDS.forEach((val, i) => {WORDS[i] = val.normalize(CONFIG.normalization); WORDS[i] = val.replaceAll('\u2018', "\u02bb")})
+  WORDS.forEach((val, i) => {
+    WORDS[i] = val.normalize(CONFIG.normalization)
+    WORDS[i] = val.replaceAll('\u2018', '\u02bb')
+  })
 }
 
 function shuffle(array: any[]) {
