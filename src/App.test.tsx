@@ -3,9 +3,14 @@ import App from './App'
 import { ORTHOGRAPHY } from './constants/orthography'
 import { WORDS } from './constants/wordlist'
 import { ORTHOGRAPHY_PATTERN } from './lib/tokenizer'
+import { DebugLogProvider } from './contexts/DebugLogContext'
 
 test('renders Not Wordle', () => {
-  render(<App />)
+  render(
+    <DebugLogProvider>
+      <App />
+    </DebugLogProvider>
+  )
   const linkElement = screen.getByText(/Hulihua/i)
   expect(linkElement).toBeInTheDocument()
 })

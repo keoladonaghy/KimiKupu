@@ -9,6 +9,7 @@ import { AboutModal } from './components/modals/AboutModal'
 import { InfoModal } from './components/modals/InfoModal'
 import { StatsModal } from './components/modals/StatsModal'
 import { LanguageSelectionModal } from './components/modals/LanguageSelectionModal'
+import { DebugOverlay } from './components/DebugOverlay'
 import { WIN_MESSAGES } from './constants/strings'
 import { isWordInWordList, isWinningWord, solution } from './lib/words'
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
@@ -20,11 +21,13 @@ import {
 } from './lib/localStorage'
 
 import { CONFIG } from './constants/config'
+import { useDebugLog } from './contexts/DebugLogContext'
 import ReactGA from 'react-ga'
 import '@bcgov/bc-sans/css/BCSans.css'
 const ALERT_TIME_MS = 2000
 
 function App() {
+  const { log } = useDebugLog()
   const [currentGuess, setCurrentGuess] = useState<Array<string>>([])
   const [isGameWon, setIsGameWon] = useState(false)
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
@@ -59,11 +62,12 @@ function App() {
 
   // Google Analytics initialization: only once
   useEffect(() => {
+    log(`Game initialized - Solution: ${solution}`)
     if (TRACKING_ID && process.env.NODE_ENV !== 'test') {
       ReactGA.initialize(TRACKING_ID)
       ReactGA.pageview(window.location.pathname)
     }
-  }, [TRACKING_ID])
+  }, [TRACKING_ID, log])
 
   const [stats, setStats] = useState(() => loadStats())
 
@@ -89,6 +93,7 @@ function App() {
   }, [isGameWon, isGameLost])
 
   const onChar = (value: string) => {
+    log(`Character entered: ${value}`)
     if (
       currentGuess.length < CONFIG.wordLength &&
       guesses.length < CONFIG.tries &&
@@ -96,18 +101,29 @@ function App() {
     ) {
       let newGuess = currentGuess.concat([value])
       setCurrentGuess(newGuess)
+      log(`Current guess updated: ${newGuess.join('')}`)
+    } else {
+      log(`Character rejected - game state prevents input`)
     }
   }
 
   const onDelete = () => {
+    log(`Delete key pressed`)
     setCurrentGuess(currentGuess.slice(0, -1))
+    log(`Current guess after delete: ${currentGuess.slice(0, -1).join('')}`)
   }
 
   const onEnter = () => {
+    log(`Enter key pressed with guess: ${currentGuess.join('')}`)
     if (isGameWon || isGameLost) {
+      log(`Enter ignored - game is over`)
       return
     }
     if (!(currentGuess.length === CONFIG.wordLength)) {
+      log(
+        `Enter rejected - not enough letters (${currentGuess.length}/${CONFIG.wordLength})`,
+        'warn'
+      )
       setIsNotEnoughLetters(true)
       return setTimeout(() => {
         setIsNotEnoughLetters(false)
@@ -115,27 +131,35 @@ function App() {
     }
 
     if (!isWordInWordList(currentGuess.join(''))) {
+      log(
+        `Enter rejected - word not in word list: ${currentGuess.join('')}`,
+        'warn'
+      )
       setIsWordNotFoundAlertOpen(true)
       return setTimeout(() => {
         setIsWordNotFoundAlertOpen(false)
       }, ALERT_TIME_MS)
     }
     const winningWord = isWinningWord(currentGuess.join(''))
+    log(`Checking if guess is winning word: ${winningWord}`)
 
     if (
       currentGuess.length === CONFIG.wordLength &&
       guesses.length < CONFIG.tries &&
       !isGameWon
     ) {
+      log(`Submitting guess: ${currentGuess.join('')}`)
       setGuesses([...guesses, currentGuess])
       setCurrentGuess([])
 
       if (winningWord) {
+        log(`Game won! Solution was: ${solution}`, 'info')
         setStats(addStatsForCompletedGame(stats, guesses.length))
         return setIsGameWon(true)
       }
 
       if (guesses.length === CONFIG.tries - 1) {
+        log(`Game lost! Solution was: ${solution}`, 'error')
         setStats(addStatsForCompletedGame(stats, guesses.length + 1))
         setIsGameLost(true)
       }
@@ -216,6 +240,7 @@ function App() {
         isOpen={successAlert !== ''}
         variant="success"
       />
+      <DebugOverlay />
     </div>
   )
 }
