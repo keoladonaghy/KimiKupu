@@ -1,7 +1,10 @@
 {
   "files": {
     "main.css": "/KimiKupu/static/css/main.f9373d50.css",
-    "main.js": "/KimiKupu/static/js/main.6576a8bb.js",
+    "main.js": "/KimiKupu/static/js/main.132d3da7.js",
+    "static/js/523.9752f625.chunk.js": "/KimiKupu/static/js/523.9752f625.chunk.js",
+    "static/js/371.8a916ab8.chunk.js": "/KimiKupu/static/js/371.8a916ab8.chunk.js",
+    "static/js/816.2aaf3971.chunk.js": "/KimiKupu/static/js/816.2aaf3971.chunk.js",
     "static/js/787.ac6cc633.chunk.js": "/KimiKupu/static/js/787.ac6cc633.chunk.js",
     "static/media/BCSans-Bold.woff": "/KimiKupu/static/media/BCSans-Bold.252ecf87ea37c93b293c.woff",
     "static/media/BCSans-BoldItalic.woff": "/KimiKupu/static/media/BCSans-BoldItalic.73ed5137b2c4a42b754f.woff",
@@ -9,11 +12,14 @@
     "static/media/BCSans-Regular.woff": "/KimiKupu/static/media/BCSans-Regular.0079ea8e42d4e81a13d2.woff",
     "index.html": "/KimiKupu/index.html",
     "main.f9373d50.css.map": "/KimiKupu/static/css/main.f9373d50.css.map",
-    "main.6576a8bb.js.map": "/KimiKupu/static/js/main.6576a8bb.js.map",
+    "main.132d3da7.js.map": "/KimiKupu/static/js/main.132d3da7.js.map",
+    "523.9752f625.chunk.js.map": "/KimiKupu/static/js/523.9752f625.chunk.js.map",
+    "371.8a916ab8.chunk.js.map": "/KimiKupu/static/js/371.8a916ab8.chunk.js.map",
+    "816.2aaf3971.chunk.js.map": "/KimiKupu/static/js/816.2aaf3971.chunk.js.map",
     "787.ac6cc633.chunk.js.map": "/KimiKupu/static/js/787.ac6cc633.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f9373d50.css",
-    "static/js/main.6576a8bb.js"
+    "static/js/main.132d3da7.js"
   ]
 }
