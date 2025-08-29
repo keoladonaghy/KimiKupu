@@ -1,24 +1,33 @@
 import { getGuessStatuses } from './statuses'
-import { solutionIndex } from './words'
-import { CONFIG } from '../constants/config'
 
-export const shareStatus = (guesses: string[][], lost: boolean) => {
+export const shareStatus = (
+  guesses: string[][],
+  lost: boolean,
+  solutionIndex: number,
+  tries: number,
+  solution: string,
+  orthography: string[]
+) => {
   navigator.clipboard.writeText(
-    ' #Hulihua: He Nane ‘Ōlelo Hawai‘i ' +
+    ' #Hulihua: He Nane ʻŌlelo Hawaiʻi ' +
       solutionIndex +
       ' ' +
       `${lost ? 'X' : guesses.length}` +
       '/' +
-      CONFIG.tries.toString() +
+      tries.toString() +
       '\n\n' +
-      generateEmojiGrid(guesses)
+      generateEmojiGrid(guesses, solution, orthography)
   )
 }
 
-export const generateEmojiGrid = (guesses: string[][]) => {
+export const generateEmojiGrid = (
+  guesses: string[][],
+  solution: string,
+  orthography: string[]
+) => {
   return guesses
     .map((guess) => {
-      const status = getGuessStatuses(guess)
+      const status = getGuessStatuses(guess, solution, orthography)
       return guess
         .map((letter, i) => {
           switch (status[i]) {

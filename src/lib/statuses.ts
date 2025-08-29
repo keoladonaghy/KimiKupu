@@ -1,17 +1,23 @@
-import { solution } from './words'
-import { ORTHOGRAPHY } from '../constants/orthography'
-import { ORTHOGRAPHY_PATTERN } from './tokenizer'
-
 export type CharStatus = 'absent' | 'present' | 'correct'
 
-export type CharValue = typeof ORTHOGRAPHY[number]
+export type CharValue = string
 
 // Helper function to normalize case for comparison
 const normalize = (char: string) => char.toLowerCase()
 
 export const getStatuses = (
-  guesses: string[][]
+  guesses: string[][],
+  solution: string,
+  orthography: string[]
 ): { [key: string]: CharStatus } => {
+  const SORTED_ORTHOGRAPHY = [...orthography].sort(
+    (a, b) => b.length - a.length
+  )
+  const ORTHOGRAPHY_PATTERN = new RegExp(
+    '(' + SORTED_ORTHOGRAPHY.join('|') + ')',
+    'g'
+  )
+
   const charObj: { [key: string]: CharStatus } = {}
   const solutionChars = solution.split(ORTHOGRAPHY_PATTERN).filter((i) => i)
   guesses.forEach((word) => {
@@ -39,7 +45,19 @@ export const getStatuses = (
   return charObj
 }
 
-export const getGuessStatuses = (guess: string[]): CharStatus[] => {
+export const getGuessStatuses = (
+  guess: string[],
+  solution: string,
+  orthography: string[]
+): CharStatus[] => {
+  const SORTED_ORTHOGRAPHY = [...orthography].sort(
+    (a, b) => b.length - a.length
+  )
+  const ORTHOGRAPHY_PATTERN = new RegExp(
+    '(' + SORTED_ORTHOGRAPHY.join('|') + ')',
+    'g'
+  )
+
   const splitSolution = solution.split(ORTHOGRAPHY_PATTERN).filter((i) => i)
   const splitGuess = guess
 

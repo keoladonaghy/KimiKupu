@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BaseModal } from './BaseModal'
+import { useLanguage } from '../../context/LanguageContext'
 
 const INTERFACE_LANGUAGES = [
   { value: 'hawaiian', label: 'Hawaiian' },
@@ -10,6 +11,7 @@ const INTERFACE_LANGUAGES = [
 const GAME_LANGUAGES = [
   { value: 'hawaiian', label: 'Hawaiian' },
   { value: 'maori', label: 'Māori' },
+  { value: 'tahitian', label: 'Tahitian' },
 ]
 
 const LOCAL_STORAGE_KEY = 'kimiKupuLanguageSettings'
@@ -32,6 +34,8 @@ export const LanguageSelectionModal = ({
   selectedLanguage,
   onLanguageChange,
 }: Props) => {
+  const { currentLanguage, setLanguage } = useLanguage()
+  
   // Load from localStorage or use defaults
   const getInitialSettings = (): LanguageSettings => {
     const stored = localStorage.getItem(LOCAL_STORAGE_KEY)
@@ -40,7 +44,7 @@ export const LanguageSelectionModal = ({
         return JSON.parse(stored)
       } catch {}
     }
-    return { interfaceLanguage: selectedLanguage || 'maori', gameLanguage: 'hawaiian' }
+    return { interfaceLanguage: selectedLanguage || 'maori', gameLanguage: currentLanguage }
   }
 
   const [settings, setSettings] = useState<LanguageSettings>(getInitialSettings())
@@ -65,9 +69,15 @@ export const LanguageSelectionModal = ({
     handleClose()
   }
 
-  const handleOK = () => {
+  const handleOK = async () => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings))
     onLanguageChange(settings.interfaceLanguage)
+    
+    // Update game language through context if it changed
+    if (settings.gameLanguage !== currentLanguage) {
+      await setLanguage(settings.gameLanguage)
+    }
+    
     handleClose()
   }
 

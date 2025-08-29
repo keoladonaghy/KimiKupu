@@ -3,8 +3,9 @@ import { StatBar } from '../stats/StatBar'
 import { Histogram } from '../stats/Histogram'
 import { GameStats } from '../../lib/localStorage'
 import { shareStatus } from '../../lib/share'
-import { solution, tomorrow } from '../../lib/words'
 import { BaseModal } from './BaseModal'
+import { useLanguage } from '../../context/LanguageContext'
+import { getWordOfDay } from '../../lib/words'
 
 type Props = {
   isOpen: boolean
@@ -14,6 +15,7 @@ type Props = {
   isGameLost: boolean
   isGameWon: boolean
   handleShare: () => void
+  solution: string
 }
 
 export const StatsModal = ({
@@ -24,7 +26,15 @@ export const StatsModal = ({
   isGameLost,
   isGameWon,
   handleShare,
+  solution,
 }: Props) => {
+  const { resources } = useLanguage()
+
+  if (!resources) {
+    return null
+  }
+
+  const { tomorrow, solutionIndex } = getWordOfDay(resources.wordList)
   if (gameStats.totalGames <= 0) {
     return (
       <BaseModal title="Statistics" isOpen={isOpen} handleClose={handleClose}>
@@ -61,7 +71,7 @@ export const StatsModal = ({
             type="button"
             className="mt-2 w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
             onClick={() => {
-              shareStatus(guesses, isGameLost)
+              shareStatus(guesses, isGameLost, solutionIndex, resources.config.tries, solution, resources.orthography)
               handleShare()
             }}
           >
