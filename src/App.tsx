@@ -17,6 +17,10 @@ import {
   saveGameStateToLocalStorage,
   loadLanguageFromLocalStorage,
   saveLanguageToLocalStorage,
+  loadUILanguageFromLocalStorage,
+  saveUILanguageToLocalStorage,
+  loadWordListLanguageFromLocalStorage,
+  saveWordListLanguageToLocalStorage,
 } from './lib/localStorage'
 
 import { CONFIG } from './constants/config'
@@ -32,6 +36,12 @@ function App() {
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false)
   const [selectedLanguage, setSelectedLanguage] = useState(() =>
     loadLanguageFromLocalStorage()
+  )
+  const [uiLanguage, setUILanguage] = useState(() =>
+    loadUILanguageFromLocalStorage()
+  )
+  const [wordListLanguage, setWordListLanguage] = useState(() =>
+    loadWordListLanguageFromLocalStorage()
   )
   const [isNotEnoughLetters, setIsNotEnoughLetters] = useState(false)
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false)
@@ -143,6 +153,18 @@ function App() {
     saveLanguageToLocalStorage(language)
   }
 
+  const handleUILanguageChange = (language: string) => {
+    setUILanguage(language)
+    saveUILanguageToLocalStorage(language)
+  }
+
+  const handleWordListLanguageChange = (language: string) => {
+    setWordListLanguage(language)
+    saveWordListLanguageToLocalStorage(language)
+    // TODO: Update word list, keyboard, and other game components
+    // For now, we'll just store the selection
+  }
+
   return (
     <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
       <div className="flex w-80 mx-auto items-center mb-8">
@@ -194,6 +216,10 @@ function App() {
         handleClose={() => setIsLanguageModalOpen(false)}
         selectedLanguage={selectedLanguage}
         onLanguageChange={handleLanguageChange}
+        uiLanguage={uiLanguage}
+        onUILanguageChange={handleUILanguageChange}
+        wordListLanguage={wordListLanguage}
+        onWordListLanguageChange={handleWordListLanguageChange}
       />
 
       <button

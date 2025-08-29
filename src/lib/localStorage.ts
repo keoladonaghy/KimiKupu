@@ -35,6 +35,8 @@ export const loadStatsFromLocalStorage = () => {
 }
 
 const languageKey = 'selectedLanguage'
+const uiLanguageKey = 'uiLanguage'
+const wordListLanguageKey = 'wordListLanguage'
 
 export const saveLanguageToLocalStorage = (language: string) => {
   localStorage.setItem(languageKey, language)
@@ -42,4 +44,22 @@ export const saveLanguageToLocalStorage = (language: string) => {
 
 export const loadLanguageFromLocalStorage = () => {
   return localStorage.getItem(languageKey) || 'hawaiian'
+}
+
+// UI Language storage functions
+export const saveUILanguageToLocalStorage = (language: string) => {
+  localStorage.setItem(uiLanguageKey, language)
+}
+
+export const loadUILanguageFromLocalStorage = () => {
+  return localStorage.getItem(uiLanguageKey) || 'english'
+}
+
+// Word List Language storage functions
+export const saveWordListLanguageToLocalStorage = (language: string) => {
+  localStorage.setItem(wordListLanguageKey, language)
+}
+
+export const loadWordListLanguageFromLocalStorage = () => {
+  return localStorage.getItem(wordListLanguageKey) || 'hawaiian'
 }
