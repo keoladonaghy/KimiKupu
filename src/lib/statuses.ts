@@ -6,6 +6,9 @@ export type CharStatus = 'absent' | 'present' | 'correct'
 
 export type CharValue = typeof ORTHOGRAPHY[number]
 
+// Helper function to normalize case for comparison
+const normalize = (char: string) => char.toLowerCase()
+
 export const getStatuses = (
   guesses: string[][]
 ): { [key: string]: CharStatus } => {
@@ -13,18 +16,21 @@ export const getStatuses = (
   const solutionChars = solution.split(ORTHOGRAPHY_PATTERN).filter((i) => i)
   guesses.forEach((word) => {
     word.forEach((letter, i) => {
-      if (!solutionChars.includes(letter)) {
+      const letterNorm = normalize(letter)
+      const solutionCharNorms = solutionChars.map(l => normalize(l))
+
+      if (!solutionCharNorms.includes(letterNorm)) {
         // make status absent
         return (charObj[letter] = 'absent')
       }
 
-      if (letter === solutionChars[i]) {
-        //make status correct
+      if (letterNorm === normalize(solutionChars[i])) {
+        // make status correct
         return (charObj[letter] = 'correct')
       }
 
       if (charObj[letter] !== 'correct') {
-        //make status present
+        // make status present
         return (charObj[letter] = 'present')
       }
     })
@@ -43,7 +49,7 @@ export const getGuessStatuses = (guess: string[]): CharStatus[] => {
 
   // handle all correct cases first
   splitGuess.forEach((letter, i) => {
-    if (letter === splitSolution[i]) {
+    if (normalize(letter) === normalize(splitSolution[i])) {
       statuses[i] = 'correct'
       solutionCharsTaken[i] = true
       return
@@ -53,7 +59,8 @@ export const getGuessStatuses = (guess: string[]): CharStatus[] => {
   splitGuess.forEach((letter, i) => {
     if (statuses[i]) return
 
-    if (!splitSolution.includes(letter)) {
+    const splitSolutionNorms = splitSolution.map(l => normalize(l))
+    if (!splitSolutionNorms.includes(normalize(letter))) {
       // handles the absent case
       statuses[i] = 'absent'
       return
@@ -61,7 +68,8 @@ export const getGuessStatuses = (guess: string[]): CharStatus[] => {
 
     // now we are left with "present"s
     const indexOfPresentChar = splitSolution.findIndex(
-      (x, index) => x === letter && !solutionCharsTaken[index]
+      (x, index) =>
+        normalize(x) === normalize(letter) && !solutionCharsTaken[index]
     )
 
     if (indexOfPresentChar > -1) {
