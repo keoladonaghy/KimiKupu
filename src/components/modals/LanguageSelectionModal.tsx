@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BaseModal } from './BaseModal'
+import { useLanguage } from '../../context/LanguageContext'
 
 const INTERFACE_LANGUAGES = [
   { value: 'hawaiian', label: 'Hawaiian' },
@@ -32,6 +33,8 @@ export const LanguageSelectionModal = ({
   selectedLanguage,
   onLanguageChange,
 }: Props) => {
+  const { setLanguage: setGameLanguage } = useLanguage()
+  
   // Load from localStorage or use defaults
   const getInitialSettings = (): LanguageSettings => {
     const stored = localStorage.getItem(LOCAL_STORAGE_KEY)
@@ -68,6 +71,7 @@ export const LanguageSelectionModal = ({
   const handleOK = () => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings))
     onLanguageChange(settings.interfaceLanguage)
+    setGameLanguage(settings.gameLanguage) // Update the game language in context
     handleClose()
   }
 

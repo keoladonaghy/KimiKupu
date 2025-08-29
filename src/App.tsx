@@ -18,13 +18,15 @@ import {
   loadLanguageFromLocalStorage,
   saveLanguageToLocalStorage,
 } from './lib/localStorage'
+import { LanguageProvider, useLanguage } from './context/LanguageContext'
 
 import { CONFIG } from './constants/config'
 import ReactGA from 'react-ga'
 import '@bcgov/bc-sans/css/BCSans.css'
 const ALERT_TIME_MS = 2000
 
-function App() {
+function AppContent() {
+  const { setLanguage } = useLanguage()
   const [currentGuess, setCurrentGuess] = useState<Array<string>>([])
   const [isGameWon, setIsGameWon] = useState(false)
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
@@ -144,6 +146,7 @@ function App() {
 
   const handleLanguageChange = (language: string) => {
     setSelectedLanguage(language)
+    setLanguage(language)
     saveLanguageToLocalStorage(language)
   }
 
@@ -217,6 +220,14 @@ function App() {
         variant="success"
       />
     </div>
+  )
+}
+
+function App() {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
   )
 }
 
