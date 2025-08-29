@@ -10,6 +10,7 @@ const INTERFACE_LANGUAGES = [
 const GAME_LANGUAGES = [
   { value: 'hawaiian', label: 'Hawaiian' },
   { value: 'maori', label: 'Māori' },
+  { value: 'tahitian', label: 'Tahitian' },
 ]
 
 const LOCAL_STORAGE_KEY = 'kimiKupuLanguageSettings'
@@ -24,6 +25,8 @@ type Props = {
   handleClose: () => void
   selectedLanguage: string
   onLanguageChange: (language: string) => void
+  gameLanguage: string
+  onGameLanguageChange: (language: string) => void
 }
 
 export const LanguageSelectionModal = ({
@@ -31,6 +34,8 @@ export const LanguageSelectionModal = ({
   handleClose,
   selectedLanguage,
   onLanguageChange,
+  gameLanguage,
+  onGameLanguageChange,
 }: Props) => {
   // Load from localStorage or use defaults
   const getInitialSettings = (): LanguageSettings => {
@@ -42,7 +47,7 @@ export const LanguageSelectionModal = ({
     }
     return {
       interfaceLanguage: selectedLanguage || 'maori',
-      gameLanguage: 'hawaiian',
+      gameLanguage: gameLanguage || 'hawaiian',
     }
   }
 
@@ -56,6 +61,12 @@ export const LanguageSelectionModal = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLanguage])
 
+  // Update settings.gameLanguage if gameLanguage prop changes
+  useEffect(() => {
+    setSettings((s) => ({ ...s, gameLanguage: gameLanguage }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameLanguage])
+
   const handleInterfaceChange = (val: string) => {
     setSettings((s) => ({ ...s, interfaceLanguage: val }))
     onLanguageChange(val)
@@ -63,6 +74,7 @@ export const LanguageSelectionModal = ({
 
   const handleGameChange = (val: string) => {
     setSettings((s) => ({ ...s, gameLanguage: val }))
+    onGameLanguageChange(val)
   }
 
   const handleCancel = () => {
@@ -73,6 +85,7 @@ export const LanguageSelectionModal = ({
   const handleOK = () => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings))
     onLanguageChange(settings.interfaceLanguage)
+    onGameLanguageChange(settings.gameLanguage)
     handleClose()
   }
 
