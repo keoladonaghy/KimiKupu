@@ -150,9 +150,7 @@ function App() {
   return (
     <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
       <div className="flex w-80 mx-auto items-center mb-8">
-        <h1 className="text-xl grow font-bold">
-          Hulihua - He Nane ‘Ōlelo Hawai‘i
-        </h1>
+        <h1 className="text-xl grow font-bold">Hulihua v.07</h1>
         <GlobeIcon
           className="h-6 w-6 cursor-pointer mr-1"
           onClick={() => setIsLanguageModalOpen(true)}
