@@ -10,7 +10,7 @@ import { InfoModal } from './components/modals/InfoModal'
 import { StatsModal } from './components/modals/StatsModal'
 import { LanguageSelectionModal } from './components/modals/LanguageSelectionModal'
 import { WIN_MESSAGES } from './constants/strings'
-import { isWordInWordList, isWinningWord, solution } from './lib/words'
+import { isWordInWordList, isWinningWord, getWordOfDay } from './lib/words'
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
 import {
   loadGameStateFromLocalStorage,
@@ -19,7 +19,7 @@ import {
   saveLanguageToLocalStorage,
 } from './lib/localStorage'
 
-import { CONFIG } from './constants/config'
+import { loadLanguageResources, LanguageResources } from './lib/languageLoader'
 import ReactGA from 'react-ga'
 import '@bcgov/bc-sans/css/BCSans.css'
 const ALERT_TIME_MS = 2000
@@ -38,38 +38,72 @@ function App() {
   const [isWordNotFoundAlertOpen, setIsWordNotFoundAlertOpen] = useState(false)
   const [isGameLost, setIsGameLost] = useState(false)
   const [successAlert, setSuccessAlert] = useState('')
-  const [guesses, setGuesses] = useState<string[][]>(() => {
-    const loaded = loadGameStateFromLocalStorage()
-    if (loaded?.solution !== solution) {
-      return []
-    }
-    const gameWasWon = loaded.guesses
-      .map((guess) => guess.join(''))
-      .includes(solution)
-    if (gameWasWon) {
-      setIsGameWon(true)
-    }
-    if (loaded.guesses.length === 6 && !gameWasWon) {
-      setIsGameLost(true)
-    }
-    return loaded.guesses
-  })
 
-  const TRACKING_ID = CONFIG.googleAnalytics // YOUR_OWN_TRACKING_ID
+  // Language resources state
+  const [languageResources, setLanguageResources] =
+    useState<LanguageResources | null>(null)
+  const [solution, setSolution] = useState<string>('')
+  const [solutionIndex, setSolutionIndex] = useState<number>(0)
+  const [tomorrow, setTomorrow] = useState<number>(0)
+
+  // Initialize guesses state
+  const [guesses, setGuesses] = useState<string[][]>([])
+  const [stats, setStats] = useState(() => loadStats())
+
+  // Load language resources on mount and when language changes
+  useEffect(() => {
+    const loadResources = async () => {
+      try {
+        const resources = await loadLanguageResources(selectedLanguage)
+        setLanguageResources(resources)
+
+        // Get word of day with new resources
+        const wordOfDay = getWordOfDay(resources.WORDS)
+        setSolution(wordOfDay.solution)
+        setSolutionIndex(wordOfDay.solutionIndex)
+        setTomorrow(wordOfDay.tomorrow)
+
+        // Reset game state when language changes
+        const loaded = loadGameStateFromLocalStorage()
+        if (loaded?.solution !== wordOfDay.solution) {
+          setGuesses([])
+          setIsGameWon(false)
+          setIsGameLost(false)
+          setCurrentGuess([])
+        } else {
+          const gameWasWon = loaded.guesses
+            .map((guess) => guess.join(''))
+            .includes(wordOfDay.solution)
+          if (gameWasWon) {
+            setIsGameWon(true)
+          }
+          if (loaded.guesses.length === resources.CONFIG.tries && !gameWasWon) {
+            setIsGameLost(true)
+          }
+          setGuesses(loaded.guesses)
+        }
+      } catch (error) {
+        console.error('Failed to load language resources:', error)
+      }
+    }
+
+    loadResources()
+  }, [selectedLanguage])
 
   // Google Analytics initialization: only once
   useEffect(() => {
-    if (TRACKING_ID && process.env.NODE_ENV !== 'test') {
-      ReactGA.initialize(TRACKING_ID)
+    if (
+      languageResources?.CONFIG.googleAnalytics &&
+      process.env.NODE_ENV !== 'test'
+    ) {
+      ReactGA.initialize(languageResources.CONFIG.googleAnalytics)
       ReactGA.pageview(window.location.pathname)
     }
-  }, [TRACKING_ID])
-
-  const [stats, setStats] = useState(() => loadStats())
+  }, [languageResources?.CONFIG.googleAnalytics])
 
   useEffect(() => {
     saveGameStateToLocalStorage({ guesses, solution })
-  }, [guesses])
+  }, [guesses, solution])
 
   useEffect(() => {
     if (isGameWon) {
@@ -88,10 +122,17 @@ function App() {
     }
   }, [isGameWon, isGameLost])
 
+  // Early return if resources not loaded yet
+  if (!languageResources) {
+    return (
+      <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">Loading...</div>
+    )
+  }
+
   const onChar = (value: string) => {
     if (
-      currentGuess.length < CONFIG.wordLength &&
-      guesses.length < CONFIG.tries &&
+      currentGuess.length < languageResources.CONFIG.wordLength &&
+      guesses.length < languageResources.CONFIG.tries &&
       !isGameWon
     ) {
       let newGuess = currentGuess.concat([value])
@@ -107,24 +148,30 @@ function App() {
     if (isGameWon || isGameLost) {
       return
     }
-    if (!(currentGuess.length === CONFIG.wordLength)) {
+    if (!(currentGuess.length === languageResources.CONFIG.wordLength)) {
       setIsNotEnoughLetters(true)
       return setTimeout(() => {
         setIsNotEnoughLetters(false)
       }, ALERT_TIME_MS)
     }
 
-    if (!isWordInWordList(currentGuess.join(''))) {
+    if (
+      !isWordInWordList(
+        currentGuess.join(''),
+        languageResources.WORDS,
+        languageResources.VALIDGUESSES
+      )
+    ) {
       setIsWordNotFoundAlertOpen(true)
       return setTimeout(() => {
         setIsWordNotFoundAlertOpen(false)
       }, ALERT_TIME_MS)
     }
-    const winningWord = isWinningWord(currentGuess.join(''))
+    const winningWord = isWinningWord(currentGuess.join(''), solution)
 
     if (
-      currentGuess.length === CONFIG.wordLength &&
-      guesses.length < CONFIG.tries &&
+      currentGuess.length === languageResources.CONFIG.wordLength &&
+      guesses.length < languageResources.CONFIG.tries &&
       !isGameWon
     ) {
       setGuesses([...guesses, currentGuess])
@@ -135,7 +182,7 @@ function App() {
         return setIsGameWon(true)
       }
 
-      if (guesses.length === CONFIG.tries - 1) {
+      if (guesses.length === languageResources.CONFIG.tries - 1) {
         setStats(addStatsForCompletedGame(stats, guesses.length + 1))
         setIsGameLost(true)
       }
@@ -166,12 +213,19 @@ function App() {
           onClick={() => setIsStatsModalOpen(true)}
         />
       </div>
-      <Grid guesses={guesses} currentGuess={currentGuess} />
+      <Grid
+        guesses={guesses}
+        currentGuess={currentGuess}
+        config={languageResources.CONFIG}
+        solution={solution}
+      />
       <Keyboard
         onChar={onChar}
         onDelete={onDelete}
         onEnter={onEnter}
         guesses={guesses}
+        orthography={languageResources.ORTHOGRAPHY}
+        solution={solution}
       />
       <InfoModal
         isOpen={isInfoModalOpen}
@@ -188,6 +242,10 @@ function App() {
           setSuccessAlert('Game copied to clipboard')
           return setTimeout(() => setSuccessAlert(''), ALERT_TIME_MS)
         }}
+        solution={solution}
+        tomorrow={tomorrow}
+        solutionIndex={solutionIndex}
+        config={languageResources.CONFIG}
       />
       <AboutModal
         isOpen={isAboutModalOpen}

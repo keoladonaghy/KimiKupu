@@ -1,15 +1,14 @@
-import { WORDS } from '../constants/wordlist'
-import { VALIDGUESSES } from '../constants/validGuesses'
+// Updated to accept language resources as parameters
 
-export const isWordInWordList = (word: string) => {
-  return WORDS.includes(word) || VALIDGUESSES.includes(word)
+export const isWordInWordList = (word: string, words: string[], validGuesses: string[]) => {
+  return words.includes(word) || validGuesses.includes(word)
 }
 
-export const isWinningWord = (word: string) => {
+export const isWinningWord = (word: string, solution: string) => {
   return solution === word
 }
 
-export const getWordOfDay = () => {
+export const getWordOfDay = (words: string[]) => {
   // January 1, 2022 Game Epoch
   const epochMs = new Date('January 1, 2022 00:00:00').valueOf()
   const now = Date.now()
@@ -18,10 +17,8 @@ export const getWordOfDay = () => {
   const nextday = (index + 1) * msInDay + epochMs
 
   return {
-    solution: WORDS[index % WORDS.length],
+    solution: words[index % words.length],
     solutionIndex: index,
     tomorrow: nextday,
   }
 }
-
-export const { solution, solutionIndex, tomorrow } = getWordOfDay()

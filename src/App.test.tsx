@@ -1,12 +1,13 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import App from './App'
 import { ORTHOGRAPHY } from './constants/orthography'
 import { WORDS } from './constants/wordlist'
 import { ORTHOGRAPHY_PATTERN } from './lib/tokenizer'
 
-test('renders Not Wordle', () => {
+test('renders Not Wordle', async () => {
   render(<App />)
-  const linkElement = screen.getByText(/Hulihua/i)
+  // Wait for language resources to load
+  const linkElement = await screen.findByText(/Hulihua/i)
   expect(linkElement).toBeInTheDocument()
 })
 
