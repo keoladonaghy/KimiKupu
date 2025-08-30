@@ -1,8 +1,11 @@
 import { Cell } from './Cell'
-import { CONFIG } from '../../constants/config'
 
-export const EmptyRow = () => {
-  const emptyCells = Array.from(Array(CONFIG.wordLength))
+type Props = {
+  wordLength: number
+}
+
+export const EmptyRow = ({ wordLength }: Props) => {
+  const emptyCells = Array.from(Array(wordLength))
 
   return (
     <div className="flex justify-center mb-1">

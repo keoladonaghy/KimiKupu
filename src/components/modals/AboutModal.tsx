@@ -1,19 +1,25 @@
-import { CONFIG } from '../../constants/config'
 import { BaseModal } from './BaseModal'
 
 type Props = {
   isOpen: boolean
   handleClose: () => void
+  config: {
+    language: string
+    author: string
+    authorWebsite: string
+    wordListSource: string
+    wordListSourceLink: string
+  }
 }
 
-export const AboutModal = ({ isOpen, handleClose }: Props) => {
+export const AboutModal = ({ isOpen, handleClose, config }: Props) => {
   return (
     <BaseModal title="No Kēia Nane Hua‘ōlelo" isOpen={isOpen} handleClose={handleClose}>
       <p className="text-sm text-gray-500">
         This is an open source clone of the game Wordle adapted to{' '}
-        {CONFIG.language} by{' '}
-        <a href={CONFIG.authorWebsite} className="underline font-bold">
-          {CONFIG.author}
+        {config.language} by{' '}
+        <a href={config.authorWebsite} className="underline font-bold">
+          {config.author}
         </a>{' '}
         - check out{' '}
         <a
@@ -38,8 +44,8 @@ export const AboutModal = ({ isOpen, handleClose }: Props) => {
         </a>{' '}
         and customize it for another language! The words for this Wordle were
         sourced from{' '}
-        <a href={CONFIG.wordListSourceLink} className="underline font-bold">
-          {CONFIG.wordListSource}
+        <a href={config.wordListSourceLink} className="underline font-bold">
+          {config.wordListSource}
         </a>
         . Or,
         {' you can also '}

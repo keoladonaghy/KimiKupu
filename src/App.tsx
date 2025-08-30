@@ -1,7 +1,7 @@
 import { InformationCircleIcon } from '@heroicons/react/outline'
 import { ChartBarIcon } from '@heroicons/react/outline'
 import { GlobeIcon } from '@heroicons/react/outline'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Alert } from './components/alerts/Alert'
 import { Grid } from './components/grid/Grid'
 import { Keyboard } from './components/keyboard/Keyboard'
@@ -10,29 +10,31 @@ import { InfoModal } from './components/modals/InfoModal'
 import { StatsModal } from './components/modals/StatsModal'
 import { LanguageSelectionModal } from './components/modals/LanguageSelectionModal'
 import { WIN_MESSAGES } from './constants/strings'
-import { isWordInWordList, isWinningWord, solution } from './lib/words'
+import { isWordInWordList, isWinningWord, getWordOfDay } from './lib/words'
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
 import {
   loadGameStateFromLocalStorage,
   saveGameStateToLocalStorage,
-  loadLanguageFromLocalStorage,
-  saveLanguageToLocalStorage,
 } from './lib/localStorage'
-
-import { CONFIG } from './constants/config'
+import { LanguageProvider, useLanguage } from './contexts/LanguageContext'
 import ReactGA from 'react-ga'
 import '@bcgov/bc-sans/css/BCSans.css'
+
 const ALERT_TIME_MS = 2000
 
-function App() {
+function AppContent() {
+  const { currentLanguage, resources, changeLanguage } = useLanguage()
+
+  // Calculate current solution based on selected language
+  const { solution, solutionIndex, tomorrow } = useMemo(() => {
+    return getWordOfDay(resources)
+  }, [resources])
+
   const [currentGuess, setCurrentGuess] = useState<Array<string>>([])
   const [isGameWon, setIsGameWon] = useState(false)
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false)
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false)
-  const [selectedLanguage, setSelectedLanguage] = useState(() =>
-    loadLanguageFromLocalStorage()
-  )
   const [isNotEnoughLetters, setIsNotEnoughLetters] = useState(false)
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false)
   const [isWordNotFoundAlertOpen, setIsWordNotFoundAlertOpen] = useState(false)
@@ -55,7 +57,7 @@ function App() {
     return loaded.guesses
   })
 
-  const TRACKING_ID = CONFIG.googleAnalytics // YOUR_OWN_TRACKING_ID
+  const TRACKING_ID = resources.config.googleAnalytics // YOUR_OWN_TRACKING_ID
 
   // Google Analytics initialization: only once
   useEffect(() => {
@@ -67,9 +69,22 @@ function App() {
 
   const [stats, setStats] = useState(() => loadStats())
 
+  // Reset game state when solution changes (language change)
+  useEffect(() => {
+    const loaded = loadGameStateFromLocalStorage()
+    if (loaded?.solution !== solution) {
+      // Reset game state for new language
+      setGuesses([])
+      setCurrentGuess([])
+      setIsGameWon(false)
+      setIsGameLost(false)
+      setSuccessAlert('')
+    }
+  }, [solution])
+
   useEffect(() => {
     saveGameStateToLocalStorage({ guesses, solution })
-  }, [guesses])
+  }, [guesses, solution])
 
   useEffect(() => {
     if (isGameWon) {
@@ -90,8 +105,8 @@ function App() {
 
   const onChar = (value: string) => {
     if (
-      currentGuess.length < CONFIG.wordLength &&
-      guesses.length < CONFIG.tries &&
+      currentGuess.length < resources.config.wordLength &&
+      guesses.length < resources.config.tries &&
       !isGameWon
     ) {
       let newGuess = currentGuess.concat([value])
@@ -107,24 +122,24 @@ function App() {
     if (isGameWon || isGameLost) {
       return
     }
-    if (!(currentGuess.length === CONFIG.wordLength)) {
+    if (!(currentGuess.length === resources.config.wordLength)) {
       setIsNotEnoughLetters(true)
       return setTimeout(() => {
         setIsNotEnoughLetters(false)
       }, ALERT_TIME_MS)
     }
 
-    if (!isWordInWordList(currentGuess.join(''))) {
+    if (!isWordInWordList(currentGuess.join(''), resources)) {
       setIsWordNotFoundAlertOpen(true)
       return setTimeout(() => {
         setIsWordNotFoundAlertOpen(false)
       }, ALERT_TIME_MS)
     }
-    const winningWord = isWinningWord(currentGuess.join(''))
+    const winningWord = isWinningWord(currentGuess.join(''), solution)
 
     if (
-      currentGuess.length === CONFIG.wordLength &&
-      guesses.length < CONFIG.tries &&
+      currentGuess.length === resources.config.wordLength &&
+      guesses.length < resources.config.tries &&
       !isGameWon
     ) {
       setGuesses([...guesses, currentGuess])
@@ -135,16 +150,11 @@ function App() {
         return setIsGameWon(true)
       }
 
-      if (guesses.length === CONFIG.tries - 1) {
+      if (guesses.length === resources.config.tries - 1) {
         setStats(addStatsForCompletedGame(stats, guesses.length + 1))
         setIsGameLost(true)
       }
     }
-  }
-
-  const handleLanguageChange = (language: string) => {
-    setSelectedLanguage(language)
-    saveLanguageToLocalStorage(language)
   }
 
   return (
@@ -166,12 +176,19 @@ function App() {
           onClick={() => setIsStatsModalOpen(true)}
         />
       </div>
-      <Grid guesses={guesses} currentGuess={currentGuess} />
+      <Grid
+        guesses={guesses}
+        currentGuess={currentGuess}
+        solution={solution}
+        config={resources.config}
+      />
       <Keyboard
         onChar={onChar}
         onDelete={onDelete}
         onEnter={onEnter}
         guesses={guesses}
+        orthography={resources.orthography}
+        solution={solution}
       />
       <InfoModal
         isOpen={isInfoModalOpen}
@@ -188,16 +205,21 @@ function App() {
           setSuccessAlert('Game copied to clipboard')
           return setTimeout(() => setSuccessAlert(''), ALERT_TIME_MS)
         }}
+        solution={solution}
+        tomorrow={tomorrow}
+        solutionIndex={solutionIndex}
+        tries={resources.config.tries}
       />
       <AboutModal
         isOpen={isAboutModalOpen}
         handleClose={() => setIsAboutModalOpen(false)}
+        config={resources.config}
       />
       <LanguageSelectionModal
         isOpen={isLanguageModalOpen}
         handleClose={() => setIsLanguageModalOpen(false)}
-        selectedLanguage={selectedLanguage}
-        onLanguageChange={handleLanguageChange}
+        selectedLanguage={currentLanguage}
+        onLanguageChange={changeLanguage}
       />
 
       <button
@@ -217,6 +239,19 @@ function App() {
         variant="success"
       />
     </div>
+  )
+}
+
+// Game reset callback to handle state reset when language changes
+const handleGameReset = () => {
+  // This will be handled by the useEffect in AppContent that listens to solution changes
+}
+
+function App() {
+  return (
+    <LanguageProvider onGameReset={handleGameReset}>
+      <AppContent />
+    </LanguageProvider>
   )
 }
 
