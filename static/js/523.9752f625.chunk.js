@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunkReo_Moana_Words=self.webpackChunkReo_Moana_Words||[]).push([[523],{523:function(n,o,a){a.r(o),a.d(o,{ORTHOGRAPHY:function(){return e}});var r=a(107),e=["a","\u0101","e","\u0113","i","\u012b","o","\u014d","u","\u016b","h","k","l","m","n","p","w","\u02bb"];r.k.normalization&&e.forEach((function(n,o){return e[o]=n.normalize(r.k.normalization)}))}}]);
-//# sourceMappingURL=523.9752f625.chunk.js.map
