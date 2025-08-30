@@ -6,7 +6,7 @@ import { ORTHOGRAPHY_PATTERN } from './lib/tokenizer'
 
 test('renders Not Wordle', () => {
   render(<App />)
-  const linkElement = screen.getByText(/Hulihua/i)
+  const linkElement = screen.getByText(/Reo Moana Words v 0.7/i)
   expect(linkElement).toBeInTheDocument()
 })
 
