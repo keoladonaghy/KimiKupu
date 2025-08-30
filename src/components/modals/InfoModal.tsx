@@ -5,12 +5,13 @@ import { CONFIG } from '../../constants/config'
 type Props = {
   isOpen: boolean
   handleClose: () => void
+  title?: string
 }
 
-export const InfoModal = ({ isOpen, handleClose }: Props) => {
+export const InfoModal = ({ isOpen, handleClose, title }: Props) => {
   return (
     <BaseModal
-      title="Pehea e pā‘ani ai - How to play"
+      title={title || 'Pehea e pāʻani ai - How to play'}
       isOpen={isOpen}
       handleClose={handleClose}
     >

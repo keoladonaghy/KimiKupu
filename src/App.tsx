@@ -10,6 +10,10 @@ import { InfoModal } from './components/modals/InfoModal'
 import { StatsModal } from './components/modals/StatsModal'
 import { LanguageSelectionModal } from './components/modals/LanguageSelectionModal'
 import { WIN_MESSAGES } from './constants/strings'
+import {
+  getLanguageResource,
+  LanguageCode,
+} from './constants/languageResources'
 import { isWordInWordList, isWinningWord, solution } from './lib/words'
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
 import {
@@ -38,6 +42,9 @@ function App() {
   const [isWordNotFoundAlertOpen, setIsWordNotFoundAlertOpen] = useState(false)
   const [isGameLost, setIsGameLost] = useState(false)
   const [successAlert, setSuccessAlert] = useState('')
+
+  // Get language resources
+  const languageResource = getLanguageResource(selectedLanguage as LanguageCode)
   const [guesses, setGuesses] = useState<string[][]>(() => {
     const loaded = loadGameStateFromLocalStorage()
     if (loaded?.solution !== solution) {
@@ -150,9 +157,7 @@ function App() {
   return (
     <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
       <div className="flex w-80 mx-auto items-center mb-8">
-        <h1 className="text-xl grow font-bold">
-          Hulihua - He Nane ‘Ōlelo Hawai‘i
-        </h1>
+        <h1 className="text-xl grow font-bold">{languageResource.gameTitle}</h1>
         <GlobeIcon
           className="h-6 w-6 cursor-pointer mr-1"
           onClick={() => setIsLanguageModalOpen(true)}
@@ -176,6 +181,7 @@ function App() {
       <InfoModal
         isOpen={isInfoModalOpen}
         handleClose={() => setIsInfoModalOpen(false)}
+        title={languageResource.howToPlay}
       />
       <StatsModal
         isOpen={isStatsModalOpen}
@@ -185,7 +191,7 @@ function App() {
         isGameLost={isGameLost}
         isGameWon={isGameWon}
         handleShare={() => {
-          setSuccessAlert('Game copied to clipboard')
+          setSuccessAlert(languageResource.gameCopiedToClipboard)
           return setTimeout(() => setSuccessAlert(''), ALERT_TIME_MS)
         }}
       />
@@ -205,12 +211,21 @@ function App() {
         className="mx-auto mt-8 flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 select-none"
         onClick={() => setIsAboutModalOpen(true)}
       >
-        About this game
+        {languageResource.aboutThisGame}
       </button>
 
-      <Alert message="Not enough letters" isOpen={isNotEnoughLetters} />
-      <Alert message="Word not found" isOpen={isWordNotFoundAlertOpen} />
-      <Alert message={`The word was ${solution}`} isOpen={isGameLost} />
+      <Alert
+        message={languageResource.notEnoughLetters}
+        isOpen={isNotEnoughLetters}
+      />
+      <Alert
+        message={languageResource.wordNotFound}
+        isOpen={isWordNotFoundAlertOpen}
+      />
+      <Alert
+        message={`${languageResource.theWordWas} ${solution}`}
+        isOpen={isGameLost}
+      />
       <Alert
         message={successAlert}
         isOpen={successAlert !== ''}

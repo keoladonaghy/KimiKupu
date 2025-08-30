@@ -41,5 +41,5 @@ export const saveLanguageToLocalStorage = (language: string) => {
 }
 
 export const loadLanguageFromLocalStorage = () => {
-  return localStorage.getItem(languageKey) || 'hawaiian'
+  return localStorage.getItem(languageKey) || 'english'
 }

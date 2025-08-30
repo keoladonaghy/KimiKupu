@@ -15,7 +15,7 @@ export const ORTHOGRAPHY = [
   'k',
   'm',
   'n',
-  'ng',  
+  'ng',
   'p',
   'r',
   'w',
