@@ -35,6 +35,7 @@ export const loadStatsFromLocalStorage = () => {
 }
 
 const languageKey = 'selectedLanguage'
+const gameLanguageKey = 'selectedGameLanguage'
 
 export const saveLanguageToLocalStorage = (language: string) => {
   localStorage.setItem(languageKey, language)
@@ -42,4 +43,12 @@ export const saveLanguageToLocalStorage = (language: string) => {
 
 export const loadLanguageFromLocalStorage = () => {
   return localStorage.getItem(languageKey) || 'hawaiian'
+}
+
+export const saveGameLanguageToLocalStorage = (language: string) => {
+  localStorage.setItem(gameLanguageKey, language)
+}
+
+export const loadGameLanguageFromLocalStorage = () => {
+  return localStorage.getItem(gameLanguageKey) || 'hawaiian'
 }

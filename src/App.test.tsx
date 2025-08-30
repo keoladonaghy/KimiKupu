@@ -1,20 +1,22 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import App from './App'
-import { ORTHOGRAPHY } from './constants/orthography'
-import { WORDS } from './constants/wordlist'
-import { ORTHOGRAPHY_PATTERN } from './lib/tokenizer'
+import { createOrthographyPattern } from './lib/tokenizer'
+import { loadLanguageResources } from './lib/languageResources'
 
-test('renders Not Wordle', () => {
+test('renders Hulihua title', async () => {
   render(<App />)
-  const linkElement = screen.getByText(/Hulihua/i)
+  // Wait for the language resources to load
+  const linkElement = await screen.findByText(/Hulihua/i)
   expect(linkElement).toBeInTheDocument()
 })
 
-test('no surprise characters', () => {
-  let splitWords = WORDS.map((x) =>
-    x.split(ORTHOGRAPHY_PATTERN).filter((x) => x)
-  )
+test('no surprise characters for default language', async () => {
+  const resources = await loadLanguageResources('hawaiian')
+  const pattern = createOrthographyPattern(resources.orthography)
+  const orthographyLowercase = resources.orthography.map((c) => c.toLowerCase())
+  let splitWords = resources.words.map((x) => x.split(pattern).filter((x) => x))
   splitWords.forEach((word) => {
-    expect(ORTHOGRAPHY).toEqual(expect.arrayContaining(word))
+    const wordLowercase = word.map((c) => c.toLowerCase())
+    expect(orthographyLowercase).toEqual(expect.arrayContaining(wordLowercase))
   })
 })

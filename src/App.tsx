@@ -10,52 +10,99 @@ import { InfoModal } from './components/modals/InfoModal'
 import { StatsModal } from './components/modals/StatsModal'
 import { LanguageSelectionModal } from './components/modals/LanguageSelectionModal'
 import { WIN_MESSAGES } from './constants/strings'
-import { isWordInWordList, isWinningWord, solution } from './lib/words'
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
 import {
   loadGameStateFromLocalStorage,
   saveGameStateToLocalStorage,
   loadLanguageFromLocalStorage,
   saveLanguageToLocalStorage,
+  loadGameLanguageFromLocalStorage,
+  saveGameLanguageToLocalStorage,
 } from './lib/localStorage'
 
-import { CONFIG } from './constants/config'
+import {
+  loadLanguageResources,
+  getWordOfDay,
+  isWordInWordList,
+  isWinningWord,
+  LanguageResources,
+} from './lib/languageResources'
+import { updateOrthographyPattern } from './lib/tokenizer'
 import ReactGA from 'react-ga'
 import '@bcgov/bc-sans/css/BCSans.css'
 const ALERT_TIME_MS = 2000
 
 function App() {
+  const [selectedLanguage, setSelectedLanguage] = useState(() =>
+    loadLanguageFromLocalStorage()
+  )
+  const [gameLanguage, setGameLanguage] = useState(() =>
+    loadGameLanguageFromLocalStorage()
+  )
+  const [languageResources, setLanguageResources] =
+    useState<LanguageResources | null>(null)
+  const [isResourcesLoading, setIsResourcesLoading] = useState(true)
+  const [solution, setSolution] = useState<string>('')
   const [currentGuess, setCurrentGuess] = useState<Array<string>>([])
   const [isGameWon, setIsGameWon] = useState(false)
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false)
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false)
-  const [selectedLanguage, setSelectedLanguage] = useState(() =>
-    loadLanguageFromLocalStorage()
-  )
   const [isNotEnoughLetters, setIsNotEnoughLetters] = useState(false)
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false)
   const [isWordNotFoundAlertOpen, setIsWordNotFoundAlertOpen] = useState(false)
   const [isGameLost, setIsGameLost] = useState(false)
   const [successAlert, setSuccessAlert] = useState('')
-  const [guesses, setGuesses] = useState<string[][]>(() => {
-    const loaded = loadGameStateFromLocalStorage()
-    if (loaded?.solution !== solution) {
-      return []
-    }
-    const gameWasWon = loaded.guesses
-      .map((guess) => guess.join(''))
-      .includes(solution)
-    if (gameWasWon) {
-      setIsGameWon(true)
-    }
-    if (loaded.guesses.length === 6 && !gameWasWon) {
-      setIsGameLost(true)
-    }
-    return loaded.guesses
-  })
+  const [guesses, setGuesses] = useState<string[][]>([])
 
-  const TRACKING_ID = CONFIG.googleAnalytics // YOUR_OWN_TRACKING_ID
+  // Load language resources when game language changes
+  useEffect(() => {
+    const loadResources = async () => {
+      setIsResourcesLoading(true)
+      try {
+        const resources = await loadLanguageResources(gameLanguage)
+        setLanguageResources(resources)
+
+        // Update the global orthography pattern for tokenization
+        updateOrthographyPattern(resources.orthography)
+
+        // Get the word of the day for this language
+        const { solution: dailySolution } = getWordOfDay(resources.words)
+        setSolution(dailySolution)
+
+        // Load game state and check if it's for the current solution
+        const loaded = loadGameStateFromLocalStorage()
+        if (loaded?.solution !== dailySolution) {
+          setGuesses([])
+          setIsGameWon(false)
+          setIsGameLost(false)
+        } else {
+          const gameWasWon = loaded.guesses
+            .map((guess) => guess.join(''))
+            .includes(dailySolution)
+          if (gameWasWon) {
+            setIsGameWon(true)
+          }
+          if (loaded.guesses.length === 6 && !gameWasWon) {
+            setIsGameLost(true)
+          }
+          setGuesses(loaded.guesses)
+        }
+      } catch (error) {
+        console.error('Failed to load language resources:', error)
+        // Fall back to default language if loading fails
+        if (gameLanguage !== 'hawaiian') {
+          setGameLanguage('hawaiian')
+        }
+      } finally {
+        setIsResourcesLoading(false)
+      }
+    }
+
+    loadResources()
+  }, [gameLanguage])
+
+  const TRACKING_ID = languageResources?.config.googleAnalytics // YOUR_OWN_TRACKING_ID
 
   // Google Analytics initialization: only once
   useEffect(() => {
@@ -68,8 +115,10 @@ function App() {
   const [stats, setStats] = useState(() => loadStats())
 
   useEffect(() => {
-    saveGameStateToLocalStorage({ guesses, solution })
-  }, [guesses])
+    if (solution && languageResources) {
+      saveGameStateToLocalStorage({ guesses, solution })
+    }
+  }, [guesses, solution, languageResources])
 
   useEffect(() => {
     if (isGameWon) {
@@ -90,8 +139,9 @@ function App() {
 
   const onChar = (value: string) => {
     if (
-      currentGuess.length < CONFIG.wordLength &&
-      guesses.length < CONFIG.tries &&
+      languageResources &&
+      currentGuess.length < languageResources.config.wordLength &&
+      guesses.length < languageResources.config.tries &&
       !isGameWon
     ) {
       let newGuess = currentGuess.concat([value])
@@ -104,27 +154,33 @@ function App() {
   }
 
   const onEnter = () => {
-    if (isGameWon || isGameLost) {
+    if (isGameWon || isGameLost || !languageResources) {
       return
     }
-    if (!(currentGuess.length === CONFIG.wordLength)) {
+    if (!(currentGuess.length === languageResources.config.wordLength)) {
       setIsNotEnoughLetters(true)
       return setTimeout(() => {
         setIsNotEnoughLetters(false)
       }, ALERT_TIME_MS)
     }
 
-    if (!isWordInWordList(currentGuess.join(''))) {
+    if (
+      !isWordInWordList(
+        currentGuess.join(''),
+        languageResources.words,
+        languageResources.validGuesses
+      )
+    ) {
       setIsWordNotFoundAlertOpen(true)
       return setTimeout(() => {
         setIsWordNotFoundAlertOpen(false)
       }, ALERT_TIME_MS)
     }
-    const winningWord = isWinningWord(currentGuess.join(''))
+    const winningWord = isWinningWord(currentGuess.join(''), solution)
 
     if (
-      currentGuess.length === CONFIG.wordLength &&
-      guesses.length < CONFIG.tries &&
+      currentGuess.length === languageResources.config.wordLength &&
+      guesses.length < languageResources.config.tries &&
       !isGameWon
     ) {
       setGuesses([...guesses, currentGuess])
@@ -135,7 +191,7 @@ function App() {
         return setIsGameWon(true)
       }
 
-      if (guesses.length === CONFIG.tries - 1) {
+      if (guesses.length === languageResources.config.tries - 1) {
         setStats(addStatsForCompletedGame(stats, guesses.length + 1))
         setIsGameLost(true)
       }
@@ -145,6 +201,22 @@ function App() {
   const handleLanguageChange = (language: string) => {
     setSelectedLanguage(language)
     saveLanguageToLocalStorage(language)
+  }
+
+  const handleGameLanguageChange = (language: string) => {
+    setGameLanguage(language)
+    saveGameLanguageToLocalStorage(language)
+  }
+
+  // Show loading state while resources are being loaded
+  if (isResourcesLoading || !languageResources) {
+    return (
+      <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div className="flex justify-center items-center h-64">
+          <div className="text-xl">Loading language resources...</div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -172,6 +244,7 @@ function App() {
         onDelete={onDelete}
         onEnter={onEnter}
         guesses={guesses}
+        orthography={languageResources.orthography}
       />
       <InfoModal
         isOpen={isInfoModalOpen}
@@ -198,6 +271,8 @@ function App() {
         handleClose={() => setIsLanguageModalOpen(false)}
         selectedLanguage={selectedLanguage}
         onLanguageChange={handleLanguageChange}
+        gameLanguage={gameLanguage}
+        onGameLanguageChange={handleGameLanguageChange}
       />
 
       <button
