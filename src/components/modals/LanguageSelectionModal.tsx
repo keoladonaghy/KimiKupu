@@ -67,7 +67,7 @@ export const LanguageSelectionModal = ({
 
   const handleOK = () => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings))
-    onLanguageChange(settings.interfaceLanguage)
+    onLanguageChange(settings.gameLanguage) // Changed to use gameLanguage instead of interfaceLanguage
     handleClose()
   }
 
