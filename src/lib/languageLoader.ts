@@ -7,35 +7,42 @@ export interface LanguageResources {
   VALIDGUESSES: string[]
 }
 
-// Map language codes to their file suffixes
-const LANGUAGE_SUFFIXES: Record<string, string> = {
-  'hawaiian': 'haw',
-  'maori': 'mao', 
-  'tahitian': 'tah',
-  'english': '', // Default files have no suffix
-}
-
-// Get the correct file suffix for a language
-function getLanguageSuffix(language: string): string {
-  return LANGUAGE_SUFFIXES[language] || ''
-}
-
 // Load language resources dynamically
 export async function loadLanguageResources(language: string): Promise<LanguageResources> {
-  const suffix = getLanguageSuffix(language)
-  const configPath = suffix ? `../constants/config.${suffix}` : '../constants/config'
-  const orthographyPath = suffix ? `../constants/orthography.${suffix}` : '../constants/orthography'
-  const wordlistPath = suffix ? `../constants/wordlist.${suffix}` : '../constants/wordlist'
-  const validGuessesPath = suffix ? `../constants/validGuesses.${suffix}` : '../constants/validGuesses'
-
   try {
-    // Import all resources in parallel
-    const [configModule, orthographyModule, wordlistModule, validGuessesModule] = await Promise.all([
-      import(configPath),
-      import(orthographyPath),
-      import(wordlistPath),
-      import(validGuessesPath),
-    ])
+    // Import all resources using dynamic imports with specific paths
+    let configModule, orthographyModule, wordlistModule, validGuessesModule
+    
+    if (language === 'hawaiian') {
+      [configModule, orthographyModule, wordlistModule, validGuessesModule] = await Promise.all([
+        import('../constants/config.haw'),
+        import('../constants/orthography.haw'),
+        import('../constants/wordlist.haw'),
+        import('../constants/validGuesses.haw'),
+      ])
+    } else if (language === 'maori') {
+      [configModule, orthographyModule, wordlistModule, validGuessesModule] = await Promise.all([
+        import('../constants/config.mao'),
+        import('../constants/orthography.mao'),
+        import('../constants/wordlist.mao'),
+        import('../constants/validGuesses.mao'),
+      ])
+    } else if (language === 'tahitian') {
+      [configModule, orthographyModule, wordlistModule, validGuessesModule] = await Promise.all([
+        import('../constants/config.tah'),
+        import('../constants/orthography.tah'),
+        import('../constants/wordlist.tah'),
+        import('../constants/validGuesses.tah'),
+      ])
+    } else {
+      // Default to base files (Hawaiian without suffix)
+      [configModule, orthographyModule, wordlistModule, validGuessesModule] = await Promise.all([
+        import('../constants/config'),
+        import('../constants/orthography'),
+        import('../constants/wordlist'),
+        import('../constants/validGuesses'),
+      ])
+    }
 
     return {
       CONFIG: configModule.CONFIG,
@@ -45,9 +52,21 @@ export async function loadLanguageResources(language: string): Promise<LanguageR
     }
   } catch (error) {
     console.error('Failed to load language resources for:', language, error)
-    // Fallback to default (Hawaiian) if loading fails
+    // Fallback to default (base files) if loading fails
     if (language !== 'hawaiian') {
-      return loadLanguageResources('hawaiian')
+      const [configModule, orthographyModule, wordlistModule, validGuessesModule] = await Promise.all([
+        import('../constants/config'),
+        import('../constants/orthography'),
+        import('../constants/wordlist'),
+        import('../constants/validGuesses'),
+      ])
+      
+      return {
+        CONFIG: configModule.CONFIG,
+        ORTHOGRAPHY: orthographyModule.ORTHOGRAPHY,
+        WORDS: wordlistModule.WORDS,
+        VALIDGUESSES: validGuessesModule.VALIDGUESSES,
+      }
     }
     throw error
   }

@@ -33,6 +33,18 @@ function App() {
   const [selectedLanguage, setSelectedLanguage] = useState(() =>
     loadLanguageFromLocalStorage()
   )
+  const [gameLanguage, setGameLanguage] = useState(() => {
+    const stored = localStorage.getItem('kimiKupuLanguageSettings')
+    if (stored) {
+      try {
+        const settings = JSON.parse(stored)
+        return settings.gameLanguage || 'hawaiian'
+      } catch {
+        return 'hawaiian'
+      }
+    }
+    return 'hawaiian'
+  })
   const [isNotEnoughLetters, setIsNotEnoughLetters] = useState(false)
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false)
   const [isWordNotFoundAlertOpen, setIsWordNotFoundAlertOpen] = useState(false)
@@ -54,7 +66,7 @@ function App() {
   useEffect(() => {
     const loadResources = async () => {
       try {
-        const resources = await loadLanguageResources(selectedLanguage)
+        const resources = await loadLanguageResources(gameLanguage)
         setLanguageResources(resources)
 
         // Get word of day with new resources
@@ -88,7 +100,7 @@ function App() {
     }
 
     loadResources()
-  }, [selectedLanguage])
+  }, [gameLanguage])
 
   // Google Analytics initialization: only once
   useEffect(() => {
@@ -189,9 +201,13 @@ function App() {
     }
   }
 
-  const handleLanguageChange = (language: string) => {
-    setSelectedLanguage(language)
-    saveLanguageToLocalStorage(language)
+  const handleLanguageChange = (
+    interfaceLanguage: string,
+    gameLanguage: string
+  ) => {
+    setSelectedLanguage(interfaceLanguage)
+    setGameLanguage(gameLanguage)
+    saveLanguageToLocalStorage(interfaceLanguage)
   }
 
   return (

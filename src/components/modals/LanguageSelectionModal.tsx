@@ -23,7 +23,7 @@ type Props = {
   isOpen: boolean
   handleClose: () => void
   selectedLanguage: string
-  onLanguageChange: (language: string) => void
+  onLanguageChange: (interfaceLanguage: string, gameLanguage: string) => void
 }
 
 export const LanguageSelectionModal = ({
@@ -53,7 +53,6 @@ export const LanguageSelectionModal = ({
 
   const handleInterfaceChange = (val: string) => {
     setSettings(s => ({ ...s, interfaceLanguage: val }))
-    onLanguageChange(val)
   }
 
   const handleGameChange = (val: string) => {
@@ -67,7 +66,7 @@ export const LanguageSelectionModal = ({
 
   const handleOK = () => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings))
-    onLanguageChange(settings.interfaceLanguage)
+    onLanguageChange(settings.interfaceLanguage, settings.gameLanguage)
     handleClose()
   }
 
