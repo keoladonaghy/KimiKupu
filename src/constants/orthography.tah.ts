@@ -1,6 +1,6 @@
 import { CONFIG } from './config'
 
-export const ORTHOGRAPHY = [
+const ORTHOGRAPHY = [
   'a',
   'ā',
   'e',
@@ -11,13 +11,14 @@ export const ORTHOGRAPHY = [
   'ō',
   'u',
   'ū',
+  'f',
   'h',
-  'k',
-  'l',
   'm',
   'n',
   'p',
-  'w',
+  'r',
+  't',
+  'v',
   'ʻ',
 ]
 
@@ -26,3 +27,5 @@ if (CONFIG.normalization) {
     (val, i) => (ORTHOGRAPHY[i] = val.normalize(CONFIG.normalization))
   )
 }
+
+export default ORTHOGRAPHY

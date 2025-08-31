@@ -1,6 +1,6 @@
 import { CONFIG } from './config'
 
-export const VALIDGUESSES = [
+export const WORDS = [
   "a‘a‘a",
   "‘a‘ae",
   "‘āahi",
@@ -1242,8 +1242,13 @@ export const VALIDGUESSES = [
   "wīlou",
 ];
 
+// Normalization block
+
 if (CONFIG.normalization) {
-  VALIDGUESSES.forEach(
-    (val, i) => {VALIDGUESSES[i] = val.normalize(CONFIG.normalization); VALIDGUESSES[i] = val.replaceAll('\u2018', "\u02bb")}
+  WORDS.forEach(
+    (val, i) => {
+      WORDS[i] = val.normalize(CONFIG.normalization)
+      WORDS[i] = val.replaceAll('\u2018', "\u02bb")
+    }
   )
 }

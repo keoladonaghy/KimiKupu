@@ -8,7 +8,7 @@ export const MiniGrid = ({ guesses }: Props) => {
   return (
     <div className="pb-6">
       {guesses.map((guess, i) => (
-        <MiniCompletedRow key={i} guess={guess} />
+        <MiniCompletedRow key={i} guess={guess} solution="" orthography={[]} />
       ))}
     </div>
   )

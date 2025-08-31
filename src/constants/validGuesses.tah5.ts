@@ -99,6 +99,9 @@ export const VALIDGUESSES = [
 
 if (CONFIG.normalization) {
   VALIDGUESSES.forEach(
-    (val, i) => {VALIDGUESSES[i] = val.normalize(CONFIG.normalization); VALIDGUESSES[i] = val.replaceAll('\u2018', "\u02bb")}
+    (val, i) => {
+      VALIDGUESSES[i] = val.normalize(CONFIG.normalization)
+      VALIDGUESSES[i] = val.replaceAll('\u2018', "\u02bb")
+    }
   )
 }

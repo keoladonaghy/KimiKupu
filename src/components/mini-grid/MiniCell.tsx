@@ -1,24 +1,22 @@
 import { CharStatus } from '../../lib/statuses'
-import classnames from 'classnames'
 
 type Props = {
+  value: string
   status: CharStatus
-  letter: string
 }
 
-export const MiniCell = ({ status, letter }: Props) => {
-  const classes = classnames(
-    'w-10 h-10 border-solid border-2 border-slate-200 flex items-center justify-center mx-0.5 text-lg font-bold rounded',
-    {
-      'bg-white': status === 'absent',
-      'bg-red-500': status === 'correct',
-      'bg-yellow-400': status === 'present',
-    }
-  )
-
+export const MiniCell = ({ value, status }: Props) => {
   return (
-    <>
-      <div className={classes}>{letter}</div>
-    </>
+    <div
+      className={`inline-flex items-center justify-center w-6 h-6 border-2 text-xs font-bold uppercase rounded ${
+        status === 'correct'
+          ? 'bg-green-500 border-green-500 text-white'
+          : status === 'present'
+          ? 'bg-yellow-500 border-yellow-500 text-white'
+          : 'bg-gray-300 border-gray-300 text-black'
+      }`}
+    >
+      {value}
+    </div>
   )
 }

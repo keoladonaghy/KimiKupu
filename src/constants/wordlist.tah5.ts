@@ -1,7 +1,5 @@
 import { CONFIG } from './config'
 
-// Use the standardized export name
-
 export const WORDS = [
   "āna‘e",
   "anapo",
@@ -99,14 +97,9 @@ export const WORDS = [
   "vaiho",
 ];
 
-// Normalization block, if needed
+// Normalization block
 
 if (CONFIG.normalization) {
-  WORDS.forEach((val, i) => {
-    WORDS[i] = val.normalize(CONFIG.normalization)
-    WORDS[i] = val.replaceAll('\u2018', "\u02bb")
-  })
-}if (CONFIG.normalization) {
   WORDS.forEach(
     (val, i) => {
       WORDS[i] = val.normalize(CONFIG.normalization)
