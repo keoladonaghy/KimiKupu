@@ -1,0 +1,50 @@
+{
+  "game": {
+    "title": "Reo Moana Puzzle",
+    "newGame": "New Game",
+    "settings": "Settings", 
+    "statistics": "Statistics",
+    "about": "About",
+    "instructions": "How to Play"
+  },
+  "alerts": {
+    "notEnoughLetters": "Not enough letters",
+    "wordNotFound": "Word not found",
+    "gameWon": "Congratulations!",
+    "gameLost": "The word was",
+    "loading": "Loading..."
+  },
+  "modals": {
+    "howToPlay": "How to Play",
+    "about": "About this game",
+    "statistics": "Statistics",
+    "settings": "Game Settings",
+    "close": "Close",
+    "ok": "OK",
+    "cancel": "Cancel"
+  },
+  "settings": {
+    "interfaceLanguage": "Interface Language",
+    "gameLanguage": "Game Language", 
+    "wordLength": "Word Length",
+    "loading": "Loading..."
+  },
+  "stats": {
+    "gamesPlayed": "Games Played",
+    "winPercentage": "Win %",
+    "currentStreak": "Current Streak",
+    "maxStreak": "Max Streak",
+    "guessDistribution": "Guess Distribution",
+    "nextWordle": "Next Wordle",
+    "share": "Share"
+  },
+  "keyboard": {
+    "enter": "Enter",
+    "delete": "Delete"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry"
+  }
+}

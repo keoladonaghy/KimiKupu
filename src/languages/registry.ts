@@ -29,7 +29,11 @@ export const LANGUAGE_REGISTRY: Record<string, LanguageRegistryEntry> = {
 };
 
 export const getLanguageByName = (name: string): LanguageRegistryEntry | undefined => {
-  return LANGUAGE_REGISTRY[name.toLowerCase()];
+  console.log('DEBUG GAME: getLanguageByName called with:', name);
+  console.log('DEBUG GAME: Available languages:', Object.keys(LANGUAGE_REGISTRY));
+  const result = LANGUAGE_REGISTRY[name.toLowerCase()];
+  console.log('DEBUG GAME: Found language entry:', result);
+  return result;
 };
 
 export const getLanguageByCode = (code: string): LanguageRegistryEntry | undefined => {

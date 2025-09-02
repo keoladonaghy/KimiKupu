@@ -1,7 +1,7 @@
 import { InformationCircleIcon } from '@heroicons/react/outline'
 import { ChartBarIcon } from '@heroicons/react/outline'
 import { GlobeIcon } from '@heroicons/react/outline'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import ReactGA from 'react-ga'
 import '@bcgov/bc-sans/css/BCSans.css'
 import { Alert } from './components/alerts/Alert'
@@ -11,6 +11,7 @@ import { AboutModal } from './components/modals/AboutModal'
 import { InfoModal } from './components/modals/InfoModal'
 import { StatsModal } from './components/modals/StatsModal'
 import { LanguageSelectionModal } from './components/modals/LanguageSelectionModal'
+import AnimatedTitle from './AnimatedTitle'
 import { WIN_MESSAGES } from './constants/strings'
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
 import {
@@ -20,7 +21,9 @@ import {
   saveLanguageToLocalStorage,
 } from './lib/localStorage'
 import { useLanguage } from './hooks/useLanguage'
+import { useInterfaceLanguage } from './hooks/useInterfaceLanguage'
 import { validateGuess } from './utils/gameHelpers'
+import { getAllLanguageNames } from './languages/registry'
 
 const DEFAULT_CONFIG = {
   wordLength: 5,
@@ -37,8 +40,32 @@ type GameSettings = {
 }
 
 function App() {
-  const { languageData, loading, error, changeLanguage, currentLanguage } =
-    useLanguage('hawaiian')
+  console.log('DEBUG: App started')
+
+  const getInitialGameLanguage = () => {
+    const stored = loadLanguageFromLocalStorage()
+    const validGameLanguages = ['hawaiian', 'maori', 'tahitian', 'samoan']
+
+    if (stored && validGameLanguages.includes(stored)) {
+      return stored
+    }
+
+    return 'hawaiian'
+  }
+
+  const {
+    languageData,
+    loading: gameLoading,
+    error: gameError,
+    changeLanguage,
+    currentLanguage,
+  } = useLanguage(getInitialGameLanguage())
+  const {
+    texts,
+    loading: interfaceLoading,
+    error: interfaceError,
+    changeInterfaceLanguage,
+  } = useInterfaceLanguage('english')
 
   const [currentGuess, setCurrentGuess] = useState<Array<string>>([])
   const [isGameWon, setIsGameWon] = useState(false)
@@ -58,14 +85,16 @@ function App() {
     loadLanguageFromLocalStorage()
   )
   const [gameSettings, setGameSettings] = useState<GameSettings>({
-    gameLanguage: 'hawaiian',
+    gameLanguage: getInitialGameLanguage(),
     wordLength: 5,
   })
 
-  // Derived from languageData
   const currentConfig = languageData?.config || DEFAULT_CONFIG
-  const currentWords = languageData?.words || []
-  const currentValidGuesses = languageData?.validGuesses || []
+  const currentWords = useMemo(
+    () => languageData?.words || [],
+    [languageData?.words]
+  )
+  // const currentValidGuesses = languageData?.validGuesses || []
   const currentOrthography = languageData?.orthography || [
     'A',
     'B',
@@ -121,14 +150,12 @@ function App() {
     await changeLanguage(gameLanguage)
     setGameSettings({ gameLanguage, wordLength: 5 })
 
-    // Reset game state
     setGuesses([])
     setCurrentGuess([])
     setIsGameWon(false)
     setIsGameLost(false)
   }
 
-  // Set solution when language data changes
   useEffect(() => {
     if (languageData && currentWords.length > 0) {
       const { solution } = getWordOfDay(currentWords)
@@ -250,8 +277,26 @@ function App() {
   }
 
   const handleLanguageChange = (language: string) => {
+    console.log('DEBUG: Full language parameter:', JSON.stringify(language))
+    console.log('DEBUG: Language length:', language.length)
+    console.log('DEBUG: handleLanguageChange called with:', language)
     setSelectedLanguage(language)
-    saveLanguageToLocalStorage(language)
+
+    const gameLanguages = getAllLanguageNames()
+    console.log('DEBUG: Available game languages:', gameLanguages)
+    console.log(
+      'DEBUG: Is valid game language?',
+      gameLanguages.includes(language)
+    )
+
+    if (gameLanguages.includes(language)) {
+      console.log('DEBUG: Saving to localStorage:', language)
+      saveLanguageToLocalStorage(language)
+    } else {
+      console.log('DEBUG: NOT saving to localStorage - invalid game language')
+    }
+
+    changeInterfaceLanguage(language)
   }
 
   const handleLanguageModalChange = async (
@@ -259,117 +304,194 @@ function App() {
     gameLanguage: string,
     wordLength: number
   ) => {
+    saveLanguageToLocalStorage(gameLanguage)
     await handleGameLanguageChange(gameLanguage)
   }
 
-  if (loading) {
+  if (gameLoading || interfaceLoading) {
+    const loadingText =
+      texts?.common?.loading || `Loading ${currentLanguage}...`
     return (
-      <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div className="flex w-80 mx-auto items-center mb-8 justify-center">
-          <h2 className="text-l font-bold">Loading {currentLanguage}...</h2>
+      <div style={{ position: 'relative', minHeight: '100vh' }}>
+        <AnimatedTitle />
+        <div className="absolute top-2 right-5 flex items-center space-x-1 z-10">
+          <GlobeIcon
+            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
+            onClick={() => setIsLanguageModalOpen(true)}
+          />
+          <InformationCircleIcon
+            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
+            onClick={() => setIsInfoModalOpen(true)}
+          />
+          <ChartBarIcon
+            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
+            onClick={() => setIsStatsModalOpen(true)}
+          />
+        </div>
+        <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
+          <div className="flex w-80 mx-auto items-center mb-8 justify-center">
+            <h2 className="text-l font-bold text-white">{loadingText}</h2>
+          </div>
         </div>
       </div>
     )
   }
 
-  if (error) {
+  if (gameError || interfaceError) {
+    const errorText = texts?.common?.error || 'Error'
+    const error = gameError || interfaceError
     return (
-      <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div className="flex w-80 mx-auto items-center mb-8 justify-center">
-          <h2 className="text-l font-bold text-red-600">Error: {error}</h2>
+      <div style={{ position: 'relative', minHeight: '100vh' }}>
+        <AnimatedTitle />
+        <div className="absolute top-2 right-5 flex items-center space-x-1 z-10">
+          <GlobeIcon
+            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
+            onClick={() => setIsLanguageModalOpen(true)}
+          />
+          <InformationCircleIcon
+            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
+            onClick={() => setIsInfoModalOpen(true)}
+          />
+          <ChartBarIcon
+            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
+            onClick={() => setIsStatsModalOpen(true)}
+          />
+        </div>
+        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+          <div className="flex w-80 mx-auto items-center mb-8 justify-center">
+            <h2 className="text-l font-bold text-orange-400">
+              {errorText}: {error}
+            </h2>
+          </div>
         </div>
       </div>
     )
   }
 
-  if (!languageData) {
+  if (!languageData || !texts) {
     return (
-      <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div className="flex w-80 mx-auto items-center mb-8 justify-center">
-          <h2 className="text-l font-bold">No language data available</h2>
+      <div style={{ position: 'relative', minHeight: '100vh' }}>
+        <AnimatedTitle />
+        <div className="absolute top-2 right-5 flex items-center space-x-1 z-10">
+          <GlobeIcon
+            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
+            onClick={() => setIsLanguageModalOpen(true)}
+          />
+          <InformationCircleIcon
+            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
+            onClick={() => setIsInfoModalOpen(true)}
+          />
+          <ChartBarIcon
+            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
+            onClick={() => setIsStatsModalOpen(true)}
+          />
+        </div>
+        <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
+          <div className="flex w-80 mx-auto items-center mb-8 justify-center">
+            <h2 className="text-l font-bold text-orange-400">
+              No language data available
+            </h2>
+          </div>
         </div>
       </div>
     )
   }
+
+  const gameTexts = texts.game
+  const alertTexts = texts.alerts
+  //  const modalTexts = texts.modals
 
   return (
-    <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
-      <div className="flex w-80 mx-auto items-center mb-8">
-        <h2 className="text-l grow font-bold">Reo Moana Puzzle</h2>
+    <div style={{ position: 'relative', minHeight: '100vh' }}>
+      <AnimatedTitle />
+
+      <div className="absolute top-2 right-5 flex items-center space-x-1 z-10">
         <GlobeIcon
-          className="h-6 w-6 cursor-pointer mr-1"
+          className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
           onClick={() => setIsLanguageModalOpen(true)}
         />
         <InformationCircleIcon
-          className="h-6 w-6 cursor-pointer mr-1"
+          className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
           onClick={() => setIsInfoModalOpen(true)}
         />
         <ChartBarIcon
-          className="h-6 w-6 cursor-pointer"
+          className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
           onClick={() => setIsStatsModalOpen(true)}
         />
       </div>
-      <Grid
-        guesses={guesses}
-        currentGuess={currentGuess}
-        solution={currentSolution}
-        orthography={currentOrthography}
-      />
-      <Keyboard
-        onChar={onChar}
-        onDelete={onDelete}
-        onEnter={onEnter}
-        guesses={guesses}
-        orthography={currentOrthography}
-        solution={currentSolution}
-      />
-      <InfoModal
-        isOpen={isInfoModalOpen}
-        handleClose={() => setIsInfoModalOpen(false)}
-      />
-      <StatsModal
-        isOpen={isStatsModalOpen}
-        handleClose={() => setIsStatsModalOpen(false)}
-        guesses={guesses}
-        gameStats={stats}
-        isGameLost={isGameLost}
-        isGameWon={isGameWon}
-        handleShare={() => {
-          setSuccessAlert('Game copied to clipboard')
-          return setTimeout(() => setSuccessAlert(''), ALERT_TIME_MS)
-        }}
-        solution={currentSolution}
-        orthography={currentOrthography}
-      />
-      <AboutModal
-        isOpen={isAboutModalOpen}
-        handleClose={() => setIsAboutModalOpen(false)}
-      />
-      <LanguageSelectionModal
-        isOpen={isLanguageModalOpen}
-        handleClose={() => setIsLanguageModalOpen(false)}
-        selectedLanguage={selectedLanguage}
-        onLanguageChange={handleLanguageChange}
-        onGameLanguageChange={handleLanguageModalChange}
-        currentSettings={gameSettings}
-      />
 
-      <button
-        type="button"
-        className="mx-auto mt-8 flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 select-none"
-        onClick={() => setIsAboutModalOpen(true)}
-      >
-        About this game
-      </button>
+      <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <Grid
+          guesses={guesses}
+          currentGuess={currentGuess}
+          solution={currentSolution}
+          orthography={currentOrthography}
+        />
+        <Keyboard
+          onChar={onChar}
+          onDelete={onDelete}
+          onEnter={onEnter}
+          guesses={guesses}
+          orthography={currentOrthography}
+          solution={currentSolution}
+        />
+        <InfoModal
+          isOpen={isInfoModalOpen}
+          handleClose={() => setIsInfoModalOpen(false)}
+        />
+        <StatsModal
+          isOpen={isStatsModalOpen}
+          handleClose={() => setIsStatsModalOpen(false)}
+          guesses={guesses}
+          gameStats={stats}
+          isGameLost={isGameLost}
+          isGameWon={isGameWon}
+          handleShare={() => {
+            setSuccessAlert('Game copied to clipboard')
+            return setTimeout(() => setSuccessAlert(''), ALERT_TIME_MS)
+          }}
+          solution={currentSolution}
+          orthography={currentOrthography}
+        />
+        <AboutModal
+          isOpen={isAboutModalOpen}
+          handleClose={() => setIsAboutModalOpen(false)}
+        />
+        <LanguageSelectionModal
+          isOpen={isLanguageModalOpen}
+          handleClose={() => setIsLanguageModalOpen(false)}
+          selectedLanguage={selectedLanguage}
+          onLanguageChange={handleLanguageChange}
+          onGameLanguageChange={handleLanguageModalChange}
+          currentSettings={gameSettings}
+        />
 
-      <Alert message="Not enough letters" isOpen={isNotEnoughLetters} />
-      <Alert message="Word not found" isOpen={isWordNotFoundAlertOpen} />
-      <Alert message={`The word was ${currentSolution}`} isOpen={isGameLost} />
-      <Alert
-        message={successAlert}
-        isOpen={successAlert !== ''}
-        variant="success"
-      />
+        <button
+          type="button"
+          className="mx-auto mt-8 flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-100 bg-indigo-800 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 select-none"
+          onClick={() => setIsAboutModalOpen(true)}
+        >
+          {gameTexts.about}
+        </button>
+
+        <Alert
+          message={alertTexts.notEnoughLetters}
+          isOpen={isNotEnoughLetters}
+        />
+        <Alert
+          message={alertTexts.wordNotFound}
+          isOpen={isWordNotFoundAlertOpen}
+        />
+        <Alert
+          message={`${alertTexts.gameLost} ${currentSolution}`}
+          isOpen={isGameLost}
+        />
+        <Alert
+          message={successAlert}
+          isOpen={successAlert !== ''}
+          variant="success"
+        />
+      </div>
     </div>
   )
 }

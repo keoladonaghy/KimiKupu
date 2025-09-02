@@ -1,16 +1,19 @@
 import { useState, useEffect } from 'react'
 import { BaseModal } from './BaseModal'
-import { getEnabledLanguages } from '../../languages/registry'  // 🆕 NEW IMPORT
+import { getEnabledLanguages } from '../../languages/registry'
+import { getEnabledInterfaceLanguages } from '../../languages/interface/interfaceRegistry'
+import { useInterfaceLanguage } from '../../hooks/useInterfaceLanguage'
 
-const INTERFACE_LANGUAGES = [
-  { value: 'hawaiian', label: 'Hawaiian' },
-  { value: 'maori', label: 'Māori (under development)' },
-  { value: 'english', label: 'English' },
-]
-
-// 🆕 UPDATED - Now uses registry instead of hardcoded list
+// Get game and interface languages from registries
 const getGameLanguages = () => {
   return getEnabledLanguages().map(lang => ({
+    value: lang.name,
+    label: lang.displayName
+  }))
+}
+
+const getInterfaceLanguages = () => {
+  return getEnabledInterfaceLanguages().map(lang => ({
     value: lang.name,
     label: lang.displayName
   }))
@@ -21,12 +24,11 @@ const WORD_LENGTHS = [
   { value: 6, label: '6 Letters' },
 ]
 
-// 🆕 UPDATED - Added Samoan mapping
 const LANGUAGE_CODE_MAP: { [key: string]: string } = {
   'hawaiian': 'haw',
   'maori': 'mao',
   'tahitian': 'tah',
-  'samoan': 'sam',  // 🆕 Added Samoan
+  'samoan': 'sam',
 }
 
 const LOCAL_STORAGE_KEY = 'kimiKupuLanguageSettings'
@@ -66,6 +68,9 @@ export const LanguageSelectionModal = ({
   onGameLanguageChange,
   currentSettings,
 }: Props) => {
+  // Use interface language system
+  const { texts, changeInterfaceLanguage, currentLanguage: currentInterfaceLanguage } = useInterfaceLanguage();
+
   // Load from localStorage or use defaults
   const getInitialSettings = (): LanguageSettings => {
     const stored = localStorage.getItem(LOCAL_STORAGE_KEY)
@@ -75,7 +80,7 @@ export const LanguageSelectionModal = ({
       } catch {}
     }
     return { 
-      interfaceLanguage: selectedLanguage || 'maori', 
+      interfaceLanguage: currentInterfaceLanguage || 'english', 
       gameLanguage: currentSettings?.gameLanguage || 'hawaiian',
       wordLength: currentSettings?.wordLength || 5
     }
@@ -85,22 +90,24 @@ export const LanguageSelectionModal = ({
   const [isLoading, setIsLoading] = useState(false)
   const [loadError, setLoadError] = useState<string | null>(null)
 
-  // 🆕 NEW - Get game languages from registry
+  // Get language options from registries
   const gameLanguages = getGameLanguages()
+  const interfaceLanguages = getInterfaceLanguages()
 
   // Update settings when props change
   useEffect(() => {
     setSettings(s => ({ 
       ...s, 
-      interfaceLanguage: selectedLanguage,
+      interfaceLanguage: currentInterfaceLanguage,
       gameLanguage: currentSettings?.gameLanguage || s.gameLanguage,
       wordLength: currentSettings?.wordLength || s.wordLength
     }))
-  }, [selectedLanguage, currentSettings])
+  }, [currentInterfaceLanguage, currentSettings])
 
-  const handleInterfaceChange = (val: string) => {
+  const handleInterfaceChange = async (val: string) => {
     setSettings(s => ({ ...s, interfaceLanguage: val }))
-    onLanguageChange(val)
+    // Change interface language immediately for preview
+    await changeInterfaceLanguage(val)
   }
 
   const handleGameChange = (val: string) => {
@@ -119,7 +126,6 @@ export const LanguageSelectionModal = ({
     }
 
     try {
-      // Dynamic imports for all 4 language files
       const [wordlistModule, configModule, orthographyModule, validGuessesModule] = await Promise.all([
         import(`../../constants/wordlist.${languageCode}${wordLength}.ts`),
         import(`../../constants/config.${languageCode}.ts`),
@@ -140,7 +146,7 @@ export const LanguageSelectionModal = ({
   }
 
   const handleCancel = () => {
-    setSettings(getInitialSettings()) // reset to last saved
+    setSettings(getInitialSettings())
     setLoadError(null)
     handleClose()
   }
@@ -150,16 +156,12 @@ export const LanguageSelectionModal = ({
     setLoadError(null)
 
     try {
-      // Load the new language files
       const languageData = await loadLanguageFiles(settings.gameLanguage, settings.wordLength)
       
-      // Save settings to localStorage
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings))
       
-      // Update interface language
       onLanguageChange(settings.interfaceLanguage)
       
-      // Update game language data
       if (onGameLanguageChange) {
         onGameLanguageChange(languageData, settings.gameLanguage, settings.wordLength)
       }
@@ -172,33 +174,54 @@ export const LanguageSelectionModal = ({
     }
   }
 
+  // Use interface texts or fallback to English
+  const modalTexts = texts?.modals || {
+    settings: 'Game Settings',
+    ok: 'OK',
+    cancel: 'Cancel',
+    close: 'Close'
+  }
+
+  const settingsTexts = texts?.settings || {
+    interfaceLanguage: 'Interface Language',
+    gameLanguage: 'Game Language',
+    wordLength: 'Word Length',
+    loading: 'Loading...'
+  }
+
   return (
-    <BaseModal title="Game Settings" isOpen={isOpen} handleClose={handleCancel}>
+    <BaseModal title={modalTexts.settings} isOpen={isOpen} handleClose={handleCancel}>
       <div className="space-y-6 px-2">
         {/* Interface Language */}
         <div>
-          <div className="font-bold mb-2 text-left">Interface Language</div>
+          <div className="font-bold mb-2 text-left">{settingsTexts.interfaceLanguage}</div>
           <div className="flex flex-col space-y-2">
-            {INTERFACE_LANGUAGES.map(lang => (
-              <label key={lang.value} className="flex items-center">
-                <input
-                  type="radio"
-                  name="interfaceLanguage"
-                  value={lang.value}
-                  checked={settings.interfaceLanguage === lang.value}
-                  onChange={() => handleInterfaceChange(lang.value)}
-                  className="h-4 w-4 text-indigo-600 border-gray-300"
-                  disabled={isLoading}
-                />
-                <span className="ml-3 text-sm text-gray-700">{lang.label}</span>
-              </label>
-            ))}
+            {interfaceLanguages.map(lang => {
+              const isDisabled = lang.value === 'maori' || isLoading;
+              return (
+                <label key={lang.value} className={`flex items-center ${isDisabled && lang.value === 'maori' ? 'opacity-50' : ''}`}>
+                  <input
+                    type="radio"
+                    name="interfaceLanguage"
+                    value={lang.value}
+                    checked={settings.interfaceLanguage === lang.value}
+                    onChange={() => handleInterfaceChange(lang.value)}
+                    className="h-4 w-4 text-indigo-600 border-gray-300"
+                    disabled={isDisabled}
+                  />
+                  <span className={`ml-3 text-sm ${isDisabled && lang.value === 'maori' ? 'text-gray-400' : 'text-gray-700'}`}>
+                    {lang.label}
+                    {lang.value === 'maori' && <span className="text-xs text-gray-400 ml-2">(coming soon)</span>}
+                  </span>
+                </label>
+              );
+            })}
           </div>
         </div>
         
         {/* Game Language */}
         <div>
-          <div className="font-bold mb-2 text-left">Game Language</div>
+          <div className="font-bold mb-2 text-left">{settingsTexts.gameLanguage}</div>
           <div className="flex flex-col space-y-2">
             {gameLanguages.map(lang => (
               <label key={lang.value} className="flex items-center">
@@ -219,7 +242,7 @@ export const LanguageSelectionModal = ({
 
         {/* Word Length */}
         <div>
-          <div className="font-bold mb-2 text-left">Word Length</div>
+          <div className="font-bold mb-2 text-left">{settingsTexts.wordLength}</div>
           <div className="flex flex-col space-y-2">
             {WORD_LENGTHS.map(length => (
               <label key={length.value} className="flex items-center">
@@ -258,7 +281,7 @@ export const LanguageSelectionModal = ({
             onClick={handleCancel}
             disabled={isLoading}
           >
-            Cancel
+            {modalTexts.cancel}
           </button>
           <button
             type="button"
@@ -266,7 +289,7 @@ export const LanguageSelectionModal = ({
             onClick={handleOK}
             disabled={isLoading}
           >
-            {isLoading ? 'Loading...' : 'OK'}
+            {isLoading ? settingsTexts.loading : modalTexts.ok}
           </button>
         </div>
       </div>

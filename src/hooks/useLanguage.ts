@@ -32,7 +32,6 @@ export const useLanguage = (initialLanguage = 'hawaiian'): UseLanguageResult => 
       setLanguageData(data);
       setCurrentLanguage(languageName);
       
-      console.log(`Loaded language: ${langEntry.displayName} (${langEntry.code})`);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error loading language';
       setError(errorMessage);
@@ -48,7 +47,7 @@ export const useLanguage = (initialLanguage = 'hawaiian'): UseLanguageResult => 
 
   useEffect(() => {
     loadLanguageData(initialLanguage);
-  }, []);
+    }, [initialLanguage]);
 
   return {
     languageData,
