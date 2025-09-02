@@ -1,12 +1,12 @@
 import { render, screen } from '@testing-library/react'
 import App from './App'
 import { ORTHOGRAPHY } from './constants/orthography'
-import { WORDS } from './constants/wordlist'
+import { WORDS } from './constants/wordlists'
 import { ORTHOGRAPHY_PATTERN } from './lib/tokenizer'
 
-test('renders Not Wordle', () => {
+test('renders Reo Moana Word Finder', () => {
   render(<App />)
-  const linkElement = screen.getByText(/Hulihua/i)
+  const linkElement = screen.getByText(/Word Finder/i)
   expect(linkElement).toBeInTheDocument()
 })
 
