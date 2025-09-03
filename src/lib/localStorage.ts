@@ -5,12 +5,14 @@ type StoredGameState = {
   solution: string
 }
 
-export const saveGameStateToLocalStorage = (gameState: StoredGameState) => {
-  localStorage.setItem(gameStateKey, JSON.stringify(gameState))
+export const saveGameStateToLocalStorage = (gameState: StoredGameState, language: string) => {
+  const gameStateKeyWithLanguage = `${gameStateKey}_${language}`
+  localStorage.setItem(gameStateKeyWithLanguage, JSON.stringify(gameState))
 }
 
-export const loadGameStateFromLocalStorage = () => {
-  const state = localStorage.getItem(gameStateKey)
+export const loadGameStateFromLocalStorage = (language: string) => {
+  const gameStateKeyWithLanguage = `${gameStateKey}_${language}`
+  const state = localStorage.getItem(gameStateKeyWithLanguage)
   return state ? (JSON.parse(state) as StoredGameState) : null
 }
 
@@ -25,13 +27,24 @@ export type GameStats = {
   successRate: number
 }
 
-export const saveStatsToLocalStorage = (gameStats: GameStats) => {
-  localStorage.setItem(gameStatKey, JSON.stringify(gameStats))
+export type MultiLanguageStats = {
+  [language: string]: GameStats
 }
 
-export const loadStatsFromLocalStorage = () => {
+export const saveStatsToLocalStorage = (gameStats: GameStats, language: string) => {
+  const existingStats = loadAllStatsFromLocalStorage()
+  existingStats[language] = gameStats
+  localStorage.setItem(gameStatKey, JSON.stringify(existingStats))
+}
+
+export const loadStatsFromLocalStorage = (language: string): GameStats | null => {
+  const allStats = loadAllStatsFromLocalStorage()
+  return allStats[language] || null
+}
+
+export const loadAllStatsFromLocalStorage = (): MultiLanguageStats => {
   const stats = localStorage.getItem(gameStatKey)
-  return stats ? (JSON.parse(stats) as GameStats) : null
+  return stats ? (JSON.parse(stats) as MultiLanguageStats) : {}
 }
 
 const languageKey = 'selectedLanguage'

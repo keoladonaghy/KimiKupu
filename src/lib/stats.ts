@@ -1,8 +1,4 @@
-import {
-  GameStats,
-  loadStatsFromLocalStorage,
-  saveStatsToLocalStorage,
-} from './localStorage'
+import { GameStats } from './localStorage'
 
 // In stats array elements 0-5 are successes in 1-6 trys
 
@@ -12,9 +8,7 @@ export const addStatsForCompletedGame = (
 ) => {
   // Count is number of incorrect guesses before end.
   const stats = { ...gameStats }
-
   stats.totalGames += 1
-
   if (count > 5) {
     // A fail situation
     stats.currentStreak = 0
@@ -22,15 +16,12 @@ export const addStatsForCompletedGame = (
   } else {
     stats.winDistribution[count] += 1
     stats.currentStreak += 1
-
     if (stats.bestStreak < stats.currentStreak) {
       stats.bestStreak = stats.currentStreak
     }
   }
-
   stats.successRate = getSuccessRate(stats)
-
-  saveStatsToLocalStorage(stats)
+  // Removed saveStatsToLocalStorage call - App.tsx handles this now
   return stats
 }
 
@@ -44,7 +35,7 @@ const defaultStats: GameStats = {
 }
 
 export const loadStats = () => {
-  return loadStatsFromLocalStorage() || defaultStats
+  return defaultStats
 }
 
 const getSuccessRate = (gameStats: GameStats) => {

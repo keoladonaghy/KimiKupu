@@ -1,6 +1,6 @@
 export type CharStatus = 'absent' | 'present' | 'correct'
 
-const normalize = (char: string) => char.toLowerCase()
+const normalize = (char: string) => char?.toLowerCase() || ''
 
 export const getStatuses = (
   guesses: string[][],

@@ -1,1 +1,1 @@
-export const WIN_MESSAGES = ['Maika‘i!', 'Maika‘i loa', 'Uihā!']
+export const WIN_MESSAGES = ['KA MAU TE WEHI!', 'KA PAI', 'TINO PAI RAWA ATU']

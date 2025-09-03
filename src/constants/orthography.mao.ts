@@ -18,6 +18,7 @@ const ORTHOGRAPHY = [
   'ng',  
   'p',
   'r',
+  't',
   'w',
   'wh',
 ]

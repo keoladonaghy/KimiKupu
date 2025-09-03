@@ -19,6 +19,8 @@ import {
   saveGameStateToLocalStorage,
   loadLanguageFromLocalStorage,
   saveLanguageToLocalStorage,
+  loadStatsFromLocalStorage,
+  saveStatsToLocalStorage,
 } from './lib/localStorage'
 import { useLanguage } from './hooks/useLanguage'
 import { useInterfaceLanguage } from './hooks/useInterfaceLanguage'
@@ -90,11 +92,9 @@ function App() {
   })
 
   const currentConfig = languageData?.config || DEFAULT_CONFIG
-  const currentWords = useMemo(
-    () => languageData?.words || [],
-    [languageData?.words]
-  )
-  // const currentValidGuesses = languageData?.validGuesses || []
+
+  const currentWords = useMemo(() => languageData?.words || [], [languageData])
+
   const currentOrthography = languageData?.orthography || [
     'A',
     'B',
@@ -125,7 +125,9 @@ function App() {
   ]
 
   const [currentSolution, setCurrentSolution] = useState<string>('')
-  const [stats, setStats] = useState(() => loadStats())
+  const [stats, setStats] = useState(
+    () => loadStatsFromLocalStorage(selectedLanguage) || loadStats()
+  )
 
   const getWordOfDay = (words: string[]) => {
     const epochMs = new Date('January 1, 2022 00:00:00').valueOf()
@@ -165,7 +167,7 @@ function App() {
 
   useEffect(() => {
     if (languageData && currentWords.length > 0 && currentSolution) {
-      const loaded = loadGameStateFromLocalStorage()
+      const loaded = loadGameStateFromLocalStorage(selectedLanguage)
       if (loaded?.solution !== currentSolution) {
         setGuesses([])
         setIsGameWon(false)
@@ -191,7 +193,10 @@ function App() {
 
   useEffect(() => {
     if (currentSolution) {
-      saveGameStateToLocalStorage({ guesses, solution: currentSolution })
+      saveGameStateToLocalStorage(
+        { guesses, solution: currentSolution },
+        selectedLanguage
+      )
     }
   }, [guesses, currentSolution])
 
@@ -225,7 +230,16 @@ function App() {
       guesses.length < currentConfig.tries &&
       !isGameWon
     ) {
-      let newGuess = currentGuess.concat([value])
+      // Split multi-character inputs like "ng" and "wh" into individual characters
+      const chars = value.split('')
+      let newGuess = [...currentGuess]
+
+      for (const char of chars) {
+        if (newGuess.length < currentConfig.wordLength) {
+          newGuess.push(char)
+        }
+      }
+
       setCurrentGuess(newGuess)
     }
   }
@@ -265,12 +279,16 @@ function App() {
       setCurrentGuess([])
 
       if (winningWord) {
-        setStats(addStatsForCompletedGame(stats, guesses.length))
+        const newStats = addStatsForCompletedGame(stats, guesses.length)
+        setStats(newStats)
+        saveStatsToLocalStorage(newStats, selectedLanguage)
         return setIsGameWon(true)
       }
 
       if (guesses.length === currentConfig.tries - 1) {
-        setStats(addStatsForCompletedGame(stats, guesses.length + 1))
+        const newStats = addStatsForCompletedGame(stats, guesses.length + 1)
+        setStats(newStats)
+        saveStatsToLocalStorage(newStats, selectedLanguage)
         setIsGameLost(true)
       }
     }
@@ -281,6 +299,7 @@ function App() {
     console.log('DEBUG: Language length:', language.length)
     console.log('DEBUG: handleLanguageChange called with:', language)
     setSelectedLanguage(language)
+    setStats(loadStatsFromLocalStorage(language) || loadStats())
 
     const gameLanguages = getAllLanguageNames()
     console.log('DEBUG: Available game languages:', gameLanguages)
@@ -399,27 +418,31 @@ function App() {
 
   const gameTexts = texts.game
   const alertTexts = texts.alerts
-  //  const modalTexts = texts.modals
 
   return (
-    <div style={{ position: 'relative', minHeight: '100vh' }}>
-      <AnimatedTitle />
-
-      <div className="absolute top-2 right-5 flex items-center space-x-1 z-10">
-        <GlobeIcon
-          className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
-          onClick={() => setIsLanguageModalOpen(true)}
-        />
-        <InformationCircleIcon
-          className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
-          onClick={() => setIsInfoModalOpen(true)}
-        />
-        <ChartBarIcon
-          className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
-          onClick={() => setIsStatsModalOpen(true)}
-        />
+    <div style={{ minHeight: '100vh' }}>
+      <div
+        className="flex justify-between items-center w-full px-5 py-1"
+        style={{ marginTop: '-3px' }}
+      >
+        <div className="flex-1">
+          <AnimatedTitle />
+        </div>
+        <div className="flex items-center space-x-1">
+          <GlobeIcon
+            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
+            onClick={() => setIsLanguageModalOpen(true)}
+          />
+          <InformationCircleIcon
+            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
+            onClick={() => setIsInfoModalOpen(true)}
+          />
+          <ChartBarIcon
+            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
+            onClick={() => setIsStatsModalOpen(true)}
+          />
+        </div>
       </div>
-
       <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
         <Grid
           guesses={guesses}
@@ -465,7 +488,6 @@ function App() {
           onGameLanguageChange={handleLanguageModalChange}
           currentSettings={gameSettings}
         />
-
         <button
           type="button"
           className="mx-auto mt-8 flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-100 bg-indigo-800 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 select-none"
@@ -473,7 +495,6 @@ function App() {
         >
           {gameTexts.about}
         </button>
-
         <Alert
           message={alertTexts.notEnoughLetters}
           isOpen={isNotEnoughLetters}

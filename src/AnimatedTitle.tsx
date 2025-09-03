@@ -90,32 +90,35 @@ const AnimatedTitle = () => {
       <>
         <style>
           {`
-            .rm-gradient {
-              position: absolute;
-              inset: 0;
-              z-index: -1;
-              pointer-events: none;
-              background: linear-gradient(
-                180deg,
-                #061428 0%,
-                #0b2a3c 5%,
-                #7fa9b4 50%,
-                #07253a 80%,
-                #020a14 100%
-              );
-            }
-
-            .static-title-container {
-              display: flex;
-              align-items: center;
-              gap: 0.5em;
-              font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-              font-size: 16pt;
-              font-weight: 800;
-              letter-spacing: 0.3px;
-              line-height: 1em;
-              margin: 40px 0 16px 20px;
-            }
+			.rm-gradient {
+			  position: fixed;
+			  top: 0;
+			  left: 0;
+			  right: 0;
+			  bottom: 0;
+			  z-index: -1;
+			  pointer-events: none;
+			  background: linear-gradient(
+				135deg,
+				#061428 0%,
+				#0b2a3c 5%,
+				#6d949e 50%,
+				#07253a 80%,
+				#020a14 100%
+			  );
+			}
+			 .static-title-container {
+			  display: flex;
+			  align-items: center;
+			  gap: 0.5em;
+			  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+			  font-size: 16pt;
+			  font-weight: 800;
+			  letter-spacing: 0.3px;
+			  line-height: 1em;
+			  margin: 8px 0 16px 12px;
+			  min-height: 1.2em;
+			}
           `}
         </style>
 
@@ -139,9 +142,12 @@ const AnimatedTitle = () => {
     <>
       <style>
         {`
-          .rm-gradient {
-            position: absolute;
-            inset: 0;
+			.rm-gradient {
+			  position: fixed;
+			  top: 0;
+			  left: 0;
+			  right: 0;
+			  bottom: 0;            
             z-index: -1;
             pointer-events: none;
             background: linear-gradient(
@@ -154,20 +160,21 @@ const AnimatedTitle = () => {
             );
           }
 
-          .animated-title-container {
-            display: flex;
-            align-items: center;
-            gap: 0.5em;
-            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-            font-size: 16pt;
-            font-weight: 800;
-            letter-spacing: 0.3px;
-            line-height: 1em;
-            margin: 32px 0 16px 40px;
-            min-height: 1.2em;
-          }
-
-          .cycling-text {
+			.animated-title-container {
+			  display: flex;
+			  align-items: center;
+			  gap: 0.5em;
+			  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+			  font-size: 16pt;
+			  font-weight: 800;
+			  letter-spacing: 0.3px;
+			  line-height: 1em;
+			  margin: 8px 0 16px 12px;
+			  min-height: 1.2em;
+			  position: relative;
+			  top: 0;
+			}
+					  .cycling-text {
             transition: opacity 0.5s ease-in-out;
             opacity: ${animationState === 'cycling' ? 1 : 0};
           }
