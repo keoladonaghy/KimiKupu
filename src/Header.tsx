@@ -120,7 +120,7 @@ const Header = ({
               width: 100%;
               padding: 8px 20px 16px 4px;
               font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-              font-size: 16pt;
+              font-size: 14pt;
               font-weight: 800;
               letter-spacing: 0.3px;
               line-height: 1em;
@@ -212,7 +212,7 @@ const Header = ({
             width: 100%;
             padding: 8px 20px 16px 4px;
             font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-            font-size: 16pt;
+            font-size: 14pt;
             font-weight: 800;
             letter-spacing: 0.3px;
             line-height: 1em;
