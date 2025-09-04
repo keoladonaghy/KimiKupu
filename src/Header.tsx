@@ -7,7 +7,7 @@ interface HeaderIcon {
 
 interface HeaderProps {
   // Language animation config
-  languages: string[] // e.g., ['Olelo Hawaii', 'Reo Maori', 'Reo Tahiti', 'Gagana Samoa']
+  languages: string[] // e.g., ['Olelo Hawaii', 'Reo Maori', 'Parau Tahiti', 'Gagana Samoa']
   languageDuration?: number // ms per language (default: 1000)
 
   // Right-side text config
