@@ -11,7 +11,7 @@ import { AboutModal } from './components/modals/AboutModal'
 import { InfoModal } from './components/modals/InfoModal'
 import { StatsModal } from './components/modals/StatsModal'
 import { LanguageSelectionModal } from './components/modals/LanguageSelectionModal'
-import AnimatedTitle from './AnimatedTitle'
+import Header from './Header'
 import { WIN_MESSAGES } from './constants/strings'
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
 import {
@@ -332,21 +332,24 @@ function App() {
       texts?.common?.loading || `Loading ${currentLanguage}...`
     return (
       <div style={{ position: 'relative', minHeight: '100vh' }}>
-        <AnimatedTitle />
-        <div className="absolute top-2 right-5 flex items-center space-x-1 z-10">
-          <GlobeIcon
-            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
-            onClick={() => setIsLanguageModalOpen(true)}
-          />
-          <InformationCircleIcon
-            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
-            onClick={() => setIsInfoModalOpen(true)}
-          />
-          <ChartBarIcon
-            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
-            onClick={() => setIsStatsModalOpen(true)}
-          />
-        </div>
+        <Header
+          languages={[
+            'Olelo Hawaii',
+            'Reo Maori',
+            'Reo Tahiti',
+            'Gagana Samoa',
+          ]}
+          rightText="Tech Workshop"
+          gameName="Word Finder"
+          icons={[
+            { icon: GlobeIcon, onClick: () => setIsLanguageModalOpen(true) },
+            {
+              icon: InformationCircleIcon,
+              onClick: () => setIsInfoModalOpen(true),
+            },
+            { icon: ChartBarIcon, onClick: () => setIsStatsModalOpen(true) },
+          ]}
+        />
         <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="flex w-80 mx-auto items-center mb-8 justify-center">
             <h2 className="text-l font-bold text-white">{loadingText}</h2>
@@ -361,21 +364,24 @@ function App() {
     const error = gameError || interfaceError
     return (
       <div style={{ position: 'relative', minHeight: '100vh' }}>
-        <AnimatedTitle />
-        <div className="absolute top-2 right-5 flex items-center space-x-1 z-10">
-          <GlobeIcon
-            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
-            onClick={() => setIsLanguageModalOpen(true)}
-          />
-          <InformationCircleIcon
-            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
-            onClick={() => setIsInfoModalOpen(true)}
-          />
-          <ChartBarIcon
-            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
-            onClick={() => setIsStatsModalOpen(true)}
-          />
-        </div>
+        <Header
+          languages={[
+            'Olelo Hawaii',
+            'Reo Maori',
+            'Reo Tahiti',
+            'Gagana Samoa',
+          ]}
+          rightText="Tech Workshop"
+          gameName="Word Finder"
+          icons={[
+            { icon: GlobeIcon, onClick: () => setIsLanguageModalOpen(true) },
+            {
+              icon: InformationCircleIcon,
+              onClick: () => setIsInfoModalOpen(true),
+            },
+            { icon: ChartBarIcon, onClick: () => setIsStatsModalOpen(true) },
+          ]}
+        />
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="flex w-80 mx-auto items-center mb-8 justify-center">
             <h2 className="text-l font-bold text-orange-400">
@@ -390,21 +396,24 @@ function App() {
   if (!languageData || !texts) {
     return (
       <div style={{ position: 'relative', minHeight: '100vh' }}>
-        <AnimatedTitle />
-        <div className="absolute top-2 right-5 flex items-center space-x-1 z-10">
-          <GlobeIcon
-            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
-            onClick={() => setIsLanguageModalOpen(true)}
-          />
-          <InformationCircleIcon
-            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
-            onClick={() => setIsInfoModalOpen(true)}
-          />
-          <ChartBarIcon
-            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
-            onClick={() => setIsStatsModalOpen(true)}
-          />
-        </div>
+        <Header
+          languages={[
+            'Olelo Hawaii',
+            'Reo Maori',
+            'Reo Tahiti',
+            'Gagana Samoa',
+          ]}
+          rightText="Tech Workshop"
+          gameName="Word Finder"
+          icons={[
+            { icon: GlobeIcon, onClick: () => setIsLanguageModalOpen(true) },
+            {
+              icon: InformationCircleIcon,
+              onClick: () => setIsInfoModalOpen(true),
+            },
+            { icon: ChartBarIcon, onClick: () => setIsStatsModalOpen(true) },
+          ]}
+        />
         <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="flex w-80 mx-auto items-center mb-8 justify-center">
             <h2 className="text-l font-bold text-orange-400">
@@ -421,28 +430,19 @@ function App() {
 
   return (
     <div style={{ minHeight: '100vh' }}>
-      <div
-        className="flex justify-between items-center w-full px-5 py-1"
-        style={{ marginTop: '-3px' }}
-      >
-        <div className="flex-1">
-          <AnimatedTitle />
-        </div>
-        <div className="flex items-center space-x-1">
-          <GlobeIcon
-            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
-            onClick={() => setIsLanguageModalOpen(true)}
-          />
-          <InformationCircleIcon
-            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
-            onClick={() => setIsInfoModalOpen(true)}
-          />
-          <ChartBarIcon
-            className="h-6 w-6 cursor-pointer text-white hover:text-gray-300"
-            onClick={() => setIsStatsModalOpen(true)}
-          />
-        </div>
-      </div>
+      <Header
+        languages={['Olelo Hawaii', 'Reo Maori', 'Reo Tahiti', 'Gagana Samoa']}
+        rightText="Tech Workshop"
+        gameName="Word Finder"
+        icons={[
+          { icon: GlobeIcon, onClick: () => setIsLanguageModalOpen(true) },
+          {
+            icon: InformationCircleIcon,
+            onClick: () => setIsInfoModalOpen(true),
+          },
+          { icon: ChartBarIcon, onClick: () => setIsStatsModalOpen(true) },
+        ]}
+      />
       <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
         <Grid
           guesses={guesses}
