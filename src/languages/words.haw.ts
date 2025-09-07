@@ -13,7 +13,7 @@ const ORTHOGRAPHY_BASE = [
 ];
 
 export const ORTHOGRAPHY = CONFIG.normalization 
-  ? ORTHOGRAPHY_BASE.map(val => val.normalize(CONFIG.normalization))
+  ? ORTHOGRAPHY_BASE.map(val => val.normalize(CONFIG.normalization as string))
   : ORTHOGRAPHY_BASE;
 
 export const HAWAIIAN_WORDS: WordEntry[] = [

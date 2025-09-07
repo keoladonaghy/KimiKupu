@@ -25,11 +25,16 @@ export interface FrequencyMetadata {
   notes?: string;                     // Additional notes about the data
 }
 
+export type LanguageStatus = 'deployed' | 'in-progress' | 'just-started';
+
 export interface LanguageConfig {
   // Game settings
   tries: number;
   language: string;
   wordLength: number;
+  
+  // Deployment status - only 'deployed' languages appear in player menu
+  status: LanguageStatus;
   
   // Frequency metadata
   frequency: FrequencyMetadata;
@@ -52,6 +57,7 @@ export const HAWAIIAN_CONFIG: LanguageConfig = {
   tries: 6,
   language: 'Hawaiian',
   wordLength: 5,
+  status: 'deployed', // Ready for production use
   frequency: {
     dataType: 'exact',
     corpusSize: 433435,
@@ -73,6 +79,7 @@ export const MAORI_CONFIG: LanguageConfig = {
   tries: 6,
   language: 'Māori',
   wordLength: 5,
+  status: 'in-progress', // Working on longer word list expansion
   frequency: {
     dataType: 'range',
     corpusSize: null, // Unknown - could ask the corpus creator
@@ -95,6 +102,7 @@ export const TAHITIAN_CONFIG: LanguageConfig = {
   tries: 6,
   language: 'Tahitian',
   wordLength: 5,
+  status: 'just-started', // Basic word list needs expansion
   frequency: {
     dataType: 'none',
     corpusSize: null,

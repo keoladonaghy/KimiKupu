@@ -1,6 +1,6 @@
 // src/languages/registry.ts
 import { LanguageRegistryEntry } from './types';
-import { LanguageConfig, hasFrequencyData, supportsDifficultyFiltering } from './frequency-types';
+import { LanguageConfig, LanguageStatus, hasFrequencyData, supportsDifficultyFiltering } from './frequency-types';
 
 // Import all language word data
 import { 
@@ -142,6 +142,28 @@ export const getCompleteLanguages = (): ExtendedLanguageInfo[] => {
   return getAllExtendedLanguages().filter(lang => lang.status === 'complete');
 };
 
+// Status-based filtering functions
+export const getDeployedLanguages = (): ExtendedLanguageInfo[] => {
+  return getAllExtendedLanguages().filter(lang => lang.config.status === 'deployed');
+};
+
+export const getInProgressLanguages = (): ExtendedLanguageInfo[] => {
+  return getAllExtendedLanguages().filter(lang => lang.config.status === 'in-progress');
+};
+
+export const getJustStartedLanguages = (): ExtendedLanguageInfo[] => {
+  return getAllExtendedLanguages().filter(lang => lang.config.status === 'just-started');
+};
+
+export const getLanguagesByStatus = (status: LanguageStatus): ExtendedLanguageInfo[] => {
+  return getAllExtendedLanguages().filter(lang => lang.config.status === status);
+};
+
+// Player-facing language list (only deployed languages)
+export const getPlayerLanguages = (): ExtendedLanguageInfo[] => {
+  return getDeployedLanguages();
+};
+
 // Registry statistics
 export const getRegistryStats = () => {
   const languages = getAllExtendedLanguages();
@@ -149,11 +171,27 @@ export const getRegistryStats = () => {
   const languagesWithFreq = languages.filter(lang => lang.hasFrequency).length;
   const completeLanguages = languages.filter(lang => lang.status === 'complete').length;
   
+  // Status counts
+  const deployedCount = languages.filter(lang => lang.config.status === 'deployed').length;
+  const inProgressCount = languages.filter(lang => lang.config.status === 'in-progress').length;
+  const justStartedCount = languages.filter(lang => lang.config.status === 'just-started').length;
+  
   return {
     totalLanguages: languages.length,
     totalWords,
     languagesWithFrequency: languagesWithFreq,
     completeLanguages,
+    
+    // Status breakdown
+    statusBreakdown: {
+      deployed: deployedCount,
+      inProgress: inProgressCount,
+      justStarted: justStartedCount
+    },
+    
+    // Player-visible count
+    playerVisibleLanguages: deployedCount,
+    
     frequencyDataTypes: languages.map(lang => ({
       language: lang.displayName,
       code: lang.code,
@@ -162,7 +200,8 @@ export const getRegistryStats = () => {
       wordCountPresent: lang.config.frequency.wordCountPresent,
       hasFrequency: lang.hasFrequency,
       supportsDifficulty: lang.supportsDifficulty,
-      status: lang.status
+      status: lang.status,
+      deploymentStatus: lang.config.status // New deployment status
     }))
   };
 };

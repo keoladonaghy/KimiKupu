@@ -21,6 +21,7 @@ export const CONFIG: LanguageConfig = {
   tries: 6,
   language: 'Samoan',
   wordLength: 5,
+  status: 'just-started', // Minimal word list, needs significant expansion
   frequency: {
     dataType: 'none', // Can be changed to 'exact' when frequency data becomes available
     corpusSize: null,  // Will be updated when corpus data is available
@@ -45,7 +46,7 @@ const ORTHOGRAPHY_BASE = [
 ];
 
 export const ORTHOGRAPHY = CONFIG.normalization 
-  ? ORTHOGRAPHY_BASE.map(val => val.normalize(CONFIG.normalization))
+  ? ORTHOGRAPHY_BASE.map(val => val.normalize(CONFIG.normalization as string))
   : ORTHOGRAPHY_BASE;
 
 export const SAMOAN_WORDS: WordEntry[] = [
