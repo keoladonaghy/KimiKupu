@@ -57,7 +57,7 @@ export const Keyboard = ({ onChar, onDelete, onEnter, guesses, orthography, solu
           )
         )}
         <Key value="DELETE" onClick={onClick} isDelete>
-          Delete
+          <span className="font-bold">←</span>
         </Key>
       </div>
       
@@ -77,7 +77,7 @@ export const Keyboard = ({ onChar, onDelete, onEnter, guesses, orthography, solu
           <Key key={char} value={char.toUpperCase()} onClick={onClick} status={charStatuses[char.toUpperCase()]} />
         ))}
         <Key value="ENTER" onClick={onClick} isEnter>
-          Enter
+          <span className="font-bold">↵</span>
         </Key>
       </div>
     </div>

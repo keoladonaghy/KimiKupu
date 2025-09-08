@@ -19,5 +19,5 @@ export const Cell = ({ value, status }: Props) => {
     }
   )
 
-  return <div className={classes}>{value}</div>
+  return <div className={classes}>{value?.toUpperCase()}</div>
 }
