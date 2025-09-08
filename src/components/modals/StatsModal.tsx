@@ -13,6 +13,7 @@ type Props = {
   handleShare: () => void
   solution: string
   orthography: string[]
+  definition?: string
 }
 
 export const StatsModal = ({
@@ -25,6 +26,7 @@ export const StatsModal = ({
   handleShare,
   solution,
   orthography,
+  definition,
 }: Props) => {
   if (gameStats.totalGames <= 0) {
     return (
@@ -72,6 +74,21 @@ export const StatsModal = ({
           <div className="text-center">Best streak</div>
         </div>
       </div>
+      
+      {/* Word Definition Section */}
+      {(isGameLost || isGameWon) && definition && (
+        <div className="mt-4 mb-4 p-4 bg-sky-50 border border-sky-200 rounded-lg">
+          <div className="text-center">
+            <div className="text-lg font-bold text-gray-900 mb-2">
+              {solution}
+            </div>
+            <div className="text-sm text-gray-700 leading-relaxed">
+              {definition}
+            </div>
+          </div>
+        </div>
+      )}
+      
       {(isGameLost || isGameWon) && (
         <div className="mt-5 sm:mt-6 columns-3 text-sm text-gray-500">
           <div>

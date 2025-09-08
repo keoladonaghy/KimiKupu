@@ -5,7 +5,6 @@ import { useState, useEffect, useMemo } from 'react'
 import ReactGA from 'react-ga'
 import '@bcgov/bc-sans/css/BCSans.css'
 import { Alert } from './components/alerts/Alert'
-import { WordDefinitionAlert } from './components/alerts/WordDefinitionAlert'
 import { Grid } from './components/grid/Grid'
 import { Keyboard } from './components/keyboard/Keyboard'
 import { AboutModal } from './components/modals/AboutModal'
@@ -79,7 +78,6 @@ function App() {
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false)
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false)
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false)
-  const [isWordDefinitionOpen, setIsWordDefinitionOpen] = useState(false)
 
   const [isNotEnoughLetters, setIsNotEnoughLetters] = useState(false)
   const [isWordNotFoundAlertOpen, setIsWordNotFoundAlertOpen] = useState(false)
@@ -227,16 +225,7 @@ function App() {
   }, [currentConfig.googleAnalytics])
 
   useEffect(() => {
-    if (isGameWon) {
-      setSuccessAlert(
-        WIN_MESSAGES[Math.floor(Math.random() * WIN_MESSAGES.length)]
-      )
-      setTimeout(() => {
-        setSuccessAlert('')
-        setIsStatsModalOpen(true)
-      }, ALERT_TIME_MS)
-    }
-    if (isGameLost) {
+    if (isGameWon || isGameLost) {
       setTimeout(() => {
         setIsStatsModalOpen(true)
       }, ALERT_TIME_MS)
@@ -302,10 +291,6 @@ function App() {
         setStats(newStats)
         saveStatsToLocalStorage(newStats, selectedLanguage)
         setIsGameWon(true)
-        // Show word definition when game is won
-        if (currentDefinition) {
-          setTimeout(() => setIsWordDefinitionOpen(true), 500)
-        }
         return
       }
 
@@ -314,10 +299,6 @@ function App() {
         setStats(newStats)
         saveStatsToLocalStorage(newStats, selectedLanguage)
         setIsGameLost(true)
-        // Show word definition when game is lost
-        if (currentDefinition) {
-          setTimeout(() => setIsWordDefinitionOpen(true), 500)
-        }
       }
     }
   }
@@ -478,12 +459,6 @@ function App() {
           solution={currentSolution}
           orthography={currentOrthography}
         />
-        <WordDefinitionAlert
-          isOpen={isWordDefinitionOpen}
-          word={currentSolution}
-          definition={currentDefinition}
-          onClose={() => setIsWordDefinitionOpen(false)}
-        />
         <Keyboard
           onChar={onChar}
           onDelete={onDelete}
@@ -509,6 +484,7 @@ function App() {
           }}
           solution={currentSolution}
           orthography={currentOrthography}
+          definition={currentDefinition}
         />
         <AboutModal
           isOpen={isAboutModalOpen}
