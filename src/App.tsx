@@ -5,6 +5,7 @@ import { useState, useEffect, useMemo } from 'react'
 import ReactGA from 'react-ga'
 import '@bcgov/bc-sans/css/BCSans.css'
 import { Alert } from './components/alerts/Alert'
+import { WordDefinitionAlert } from './components/alerts/WordDefinitionAlert'
 import { Grid } from './components/grid/Grid'
 import { Keyboard } from './components/keyboard/Keyboard'
 import { AboutModal } from './components/modals/AboutModal'
@@ -78,6 +79,7 @@ function App() {
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false)
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false)
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false)
+  const [isWordDefinitionOpen, setIsWordDefinitionOpen] = useState(false)
 
   const [isNotEnoughLetters, setIsNotEnoughLetters] = useState(false)
   const [isWordNotFoundAlertOpen, setIsWordNotFoundAlertOpen] = useState(false)
@@ -125,17 +127,30 @@ function App() {
   ]
 
   const [currentSolution, setCurrentSolution] = useState<string>('')
+  const [currentDefinition, setCurrentDefinition] = useState<string>('')
   const [stats, setStats] = useState(
     () => loadStatsFromLocalStorage(selectedLanguage) || loadStats()
   )
 
-  const getWordOfDay = (words: string[]) => {
+  const getWordOfDay = (words: string[], unifiedWords?: any[]) => {
     const epochMs = new Date('January 1, 2022 00:00:00').valueOf()
     const now = Date.now()
     const msInDay = 86400000
     const index = Math.floor((now - epochMs) / msInDay)
+    const solution = words[index % words.length]
+
+    // Try to find the definition from unified words
+    let definition = ''
+    if (unifiedWords) {
+      const wordEntry = unifiedWords.find(
+        (entry) => entry.word.toLowerCase() === solution.toLowerCase()
+      )
+      definition = wordEntry?.definition || ''
+    }
+
     return {
-      solution: words[index % words.length],
+      solution,
+      definition,
       solutionIndex: index,
     }
   }
@@ -160,8 +175,12 @@ function App() {
 
   useEffect(() => {
     if (languageData && currentWords.length > 0) {
-      const { solution } = getWordOfDay(currentWords)
+      const { solution, definition } = getWordOfDay(
+        currentWords,
+        languageData.unifiedWords
+      )
       setCurrentSolution(solution)
+      setCurrentDefinition(definition)
     }
   }, [languageData, currentWords])
 
@@ -282,7 +301,12 @@ function App() {
         const newStats = addStatsForCompletedGame(stats, guesses.length)
         setStats(newStats)
         saveStatsToLocalStorage(newStats, selectedLanguage)
-        return setIsGameWon(true)
+        setIsGameWon(true)
+        // Show word definition when game is won
+        if (currentDefinition) {
+          setTimeout(() => setIsWordDefinitionOpen(true), 500)
+        }
+        return
       }
 
       if (guesses.length === currentConfig.tries - 1) {
@@ -290,6 +314,10 @@ function App() {
         setStats(newStats)
         saveStatsToLocalStorage(newStats, selectedLanguage)
         setIsGameLost(true)
+        // Show word definition when game is lost
+        if (currentDefinition) {
+          setTimeout(() => setIsWordDefinitionOpen(true), 500)
+        }
       }
     }
   }
@@ -449,6 +477,12 @@ function App() {
           currentGuess={currentGuess}
           solution={currentSolution}
           orthography={currentOrthography}
+        />
+        <WordDefinitionAlert
+          isOpen={isWordDefinitionOpen}
+          word={currentSolution}
+          definition={currentDefinition}
+          onClose={() => setIsWordDefinitionOpen(false)}
         />
         <Keyboard
           onChar={onChar}

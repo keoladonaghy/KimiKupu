@@ -119,7 +119,8 @@ export class LanguageLoader {
       config,
       orthography,
       words,
-      validGuesses
+      validGuesses,
+      unifiedWords: rawData.unifiedWords
     };
 
     this.cache.set(langEntry.code, languageData);
