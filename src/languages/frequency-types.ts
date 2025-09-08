@@ -27,6 +27,14 @@ export interface FrequencyMetadata {
 
 export type LanguageStatus = 'deployed' | 'in-progress' | 'just-started';
 
+export interface FeatureAvailability {
+  words: boolean;         // Word list is available and sufficient for gameplay
+  definitions: boolean;   // Definitions are complete and ready for use
+  frequency: boolean;     // Frequency data is available
+  pronunciation?: boolean; // Pronunciation data available (future)
+  examples?: boolean;     // Example sentences available (future)
+}
+
 export interface LanguageConfig {
   // Game settings
   tries: number;
@@ -35,6 +43,9 @@ export interface LanguageConfig {
   
   // Deployment status - only 'deployed' languages appear in player menu
   status: LanguageStatus;
+  
+  // Feature availability flags
+  features: FeatureAvailability;
   
   // Frequency metadata
   frequency: FrequencyMetadata;
@@ -58,6 +69,11 @@ export const HAWAIIAN_CONFIG: LanguageConfig = {
   language: 'Hawaiian',
   wordLength: 5,
   status: 'deployed', // Ready for production use
+  features: {
+    words: true,        // 12,368 words available
+    definitions: true,  // Definitions ready (pretending per your request)
+    frequency: true,    // Exact frequency data available
+  },
   frequency: {
     dataType: 'exact',
     corpusSize: 433435,
@@ -80,6 +96,11 @@ export const MAORI_CONFIG: LanguageConfig = {
   language: 'Māori',
   wordLength: 5,
   status: 'in-progress', // Working on longer word list expansion
+  features: {
+    words: true,        // 148 words sufficient for gameplay
+    definitions: false, // Definitions not yet complete
+    frequency: true,    // Range-based frequency data available
+  },
   frequency: {
     dataType: 'range',
     corpusSize: null, // Unknown - could ask the corpus creator
@@ -103,6 +124,11 @@ export const TAHITIAN_CONFIG: LanguageConfig = {
   language: 'Tahitian',
   wordLength: 5,
   status: 'just-started', // Basic word list needs expansion
+  features: {
+    words: false,       // Only 93 words - insufficient for full gameplay
+    definitions: false, // Definitions not complete
+    frequency: false,   // No frequency data available
+  },
   frequency: {
     dataType: 'none',
     corpusSize: null,

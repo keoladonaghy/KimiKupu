@@ -24,6 +24,12 @@ const WORD_LENGTHS = [
   { value: 6, label: '6 Letters' },
 ]
 
+const DEFINITION_USES = [
+  { value: 'none', label: "Don't show definitions" },
+  { value: 'hint', label: 'Use as a hint' },
+  { value: 'reveal', label: 'Reveal at end' },
+]
+
 const LANGUAGE_CODE_MAP: { [key: string]: string } = {
   'hawaiian': 'haw',
   'maori': 'mao',
@@ -37,6 +43,7 @@ type LanguageSettings = {
   interfaceLanguage: string
   gameLanguage: string
   wordLength: number
+  definitionUse: string
 }
 
 type LanguageData = {
@@ -82,7 +89,8 @@ export const LanguageSelectionModal = ({
     return { 
       interfaceLanguage: currentInterfaceLanguage || 'english', 
       gameLanguage: currentSettings?.gameLanguage || '', // Start with no selection
-      wordLength: currentSettings?.wordLength || 5
+      wordLength: currentSettings?.wordLength || 5,
+      definitionUse: 'none' // Default to not showing definitions
     }
   }
 
@@ -93,6 +101,10 @@ export const LanguageSelectionModal = ({
   // Get language options from registries
   const gameLanguages = getGameLanguages()
   const interfaceLanguages = getInterfaceLanguages()
+
+  // Check if selected language has definitions available
+  const selectedLanguageData = getKimiKupuLanguages().find(lang => lang.name === settings.gameLanguage)
+  const definitionsAvailable = selectedLanguageData?.features.definitions || false
 
   // Update settings when props change
   useEffect(() => {
@@ -116,6 +128,10 @@ export const LanguageSelectionModal = ({
 
   const handleWordLengthChange = (val: number) => {
     setSettings(s => ({ ...s, wordLength: val }))
+  }
+
+  const handleDefinitionUseChange = (val: string) => {
+    setSettings(s => ({ ...s, definitionUse: val }))
   }
 
   const loadLanguageFiles = async (gameLanguage: string, wordLength: number): Promise<LanguageData> => {
@@ -188,11 +204,13 @@ export const LanguageSelectionModal = ({
     close: 'Close'
   }
 
-  const settingsTexts = texts?.settings || {
+  const settingsTexts = {
     interfaceLanguage: 'Interface Language',
-    gameLanguage: 'Game Language',
+    gameLanguage: 'Word List Language',
     wordLength: 'Word Length',
-    loading: 'Loading...'
+    definitionUse: 'Definition Use',
+    loading: 'Loading...',
+    ...texts?.settings
   }
 
   return (
@@ -257,6 +275,25 @@ export const LanguageSelectionModal = ({
             ))}
           </div>
         </div>
+
+        {/* Definition Use - only show if definitions are available for selected language */}
+        {definitionsAvailable && (
+          <div>
+            <div className="font-bold mb-2 text-left">{settingsTexts.definitionUse}</div>
+            <select
+              value={settings.definitionUse}
+              onChange={(e) => handleDefinitionUseChange(e.target.value)}
+              disabled={isLoading}
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              {DEFINITION_USES.map(use => (
+                <option key={use.value} value={use.value}>
+                  {use.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {/* Error Display */}
         {loadError && (

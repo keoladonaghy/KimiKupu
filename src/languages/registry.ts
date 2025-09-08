@@ -39,6 +39,7 @@ export interface ExtendedLanguageInfo extends LanguageRegistryEntry {
   hasFrequency: boolean;
   supportsDifficulty: boolean;
   status: 'complete' | 'partial' | 'placeholder';
+  features: import('./frequency-types').FeatureAvailability;
 }
 
 // Extended language registry with full data
@@ -54,7 +55,8 @@ export const EXTENDED_LANGUAGE_REGISTRY: Record<string, ExtendedLanguageInfo> = 
     wordCount: HAWAIIAN_WORDS.length,
     hasFrequency: hasFrequencyData(HAWAIIAN_CONFIG),
     supportsDifficulty: supportsDifficultyFiltering(HAWAIIAN_CONFIG),
-    status: 'complete'
+    status: 'complete',
+    features: HAWAIIAN_CONFIG.features
   },
   maori: {
     code: 'mao', 
@@ -67,7 +69,8 @@ export const EXTENDED_LANGUAGE_REGISTRY: Record<string, ExtendedLanguageInfo> = 
     wordCount: MAORI_WORDS.length,
     hasFrequency: hasFrequencyData(MAORI_CONFIG),
     supportsDifficulty: supportsDifficultyFiltering(MAORI_CONFIG),
-    status: 'complete'
+    status: 'complete',
+    features: MAORI_CONFIG.features
   },
   tahitian: {
     code: 'tah',
@@ -80,7 +83,8 @@ export const EXTENDED_LANGUAGE_REGISTRY: Record<string, ExtendedLanguageInfo> = 
     wordCount: TAHITIAN_WORDS.length,
     hasFrequency: hasFrequencyData(TAHITIAN_CONFIG),
     supportsDifficulty: supportsDifficultyFiltering(TAHITIAN_CONFIG),
-    status: 'complete'
+    status: 'complete',
+    features: TAHITIAN_CONFIG.features
   },
   samoan: {
     code: 'sam',
@@ -93,7 +97,8 @@ export const EXTENDED_LANGUAGE_REGISTRY: Record<string, ExtendedLanguageInfo> = 
     wordCount: SAMOAN_WORDS.length,
     hasFrequency: hasFrequencyData(SAMOAN_CONFIG),
     supportsDifficulty: supportsDifficultyFiltering(SAMOAN_CONFIG),
-    status: 'placeholder'
+    status: 'placeholder',
+    features: SAMOAN_CONFIG.features
   }
 };
 

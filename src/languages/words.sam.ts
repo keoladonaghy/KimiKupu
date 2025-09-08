@@ -22,6 +22,11 @@ export const CONFIG: LanguageConfig = {
   language: 'Samoan',
   wordLength: 5,
   status: 'just-started', // Minimal word list, needs significant expansion
+  features: {
+    words: false,       // Only 27 words - insufficient for gameplay
+    definitions: false, // Definitions not complete
+    frequency: false,   // No frequency data available
+  },
   frequency: {
     dataType: 'none', // Can be changed to 'exact' when frequency data becomes available
     corpusSize: null,  // Will be updated when corpus data is available
