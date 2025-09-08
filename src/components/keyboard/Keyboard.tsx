@@ -43,24 +43,25 @@ export const Keyboard = ({ onChar, onDelete, onEnter, guesses, orthography, solu
   const okinaChar = orthography.find(char => char === 'ʻ' || char === "'")
   const nonOkinaChars = orthography.filter(char => char !== 'ʻ' && char !== "'")
   
-  const topRowEnd = Math.floor(orthography.length * 0.4)
-  const middleRowEnd = Math.floor(orthography.length * 0.7)
+  // Rebalanced: 7 chars + delete = 8 top, 7 middle (including 'okina), rest bottom
+  const topRowEnd = 7 // 7 chars + delete = 8 keys total
+  const middleRowEnd = topRowEnd + 6 // 6 chars + 'okina = 7 keys total
 
   return (
     <div>
-      {/* Top row: First 40% of characters + DELETE (red) */}
+      {/* Top row: 7 characters + DELETE = 8 keys total */}
       <div className="flex justify-center mb-1">
         {nonOkinaChars.slice(0, topRowEnd).map(
           (char) => (
             <Key key={char} value={char.toUpperCase()} onClick={onClick} status={charStatuses[char.toUpperCase()]} />
           )
         )}
-        <Key width={65.4} value="DELETE" onClick={onClick} isDelete>
+        <Key value="DELETE" onClick={onClick} isDelete>
           Delete
         </Key>
       </div>
       
-      {/* Middle row: Next 30% of characters + 'okina (offset/shorter) */}
+      {/* Middle row: 6 characters + 'okina = 7 keys total (offset/shorter) */}
       <div className="flex justify-center mb-1">
         {nonOkinaChars.slice(topRowEnd, middleRowEnd).map((char) => (
           <Key key={char} value={char.toUpperCase()} onClick={onClick} status={charStatuses[char.toUpperCase()]} />
@@ -70,12 +71,12 @@ export const Keyboard = ({ onChar, onDelete, onEnter, guesses, orthography, solu
         )}
       </div>
       
-      {/* Bottom row: Remaining characters + ENTER (green) */}
+      {/* Bottom row: Remaining characters + ENTER */}
       <div className="flex justify-center">
         {nonOkinaChars.slice(middleRowEnd).map((char) => (
           <Key key={char} value={char.toUpperCase()} onClick={onClick} status={charStatuses[char.toUpperCase()]} />
         ))}
-        <Key width={65.4} value="ENTER" onClick={onClick} isEnter>
+        <Key value="ENTER" onClick={onClick} isEnter>
           Enter
         </Key>
       </div>
