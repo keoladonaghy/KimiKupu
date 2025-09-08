@@ -164,6 +164,15 @@ export const getPlayerLanguages = (): ExtendedLanguageInfo[] => {
   return getDeployedLanguages();
 };
 
+// KimiKupu-suitable languages (sufficient word count for gameplay)
+export const getKimiKupuLanguages = (): ExtendedLanguageInfo[] => {
+  const MIN_WORDS_FOR_KIMIKUPU = 100; // Minimum word count needed for KimiKupu gameplay
+  return getAllExtendedLanguages().filter(lang => 
+    lang.wordCount >= MIN_WORDS_FOR_KIMIKUPU && 
+    (lang.config.status === 'deployed' || lang.config.status === 'in-progress')
+  );
+};
+
 // Registry statistics
 export const getRegistryStats = () => {
   const languages = getAllExtendedLanguages();

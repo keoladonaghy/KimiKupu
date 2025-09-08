@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react'
 import { BaseModal } from './BaseModal'
-import { getEnabledLanguages } from '../../languages/registry'
+import { getKimiKupuLanguages } from '../../languages/registry'
 import { getEnabledInterfaceLanguages } from '../../languages/interface/interfaceRegistry'
 import { useInterfaceLanguage } from '../../hooks/useInterfaceLanguage'
 
 // Get game and interface languages from registries
 const getGameLanguages = () => {
-  return getEnabledLanguages().map(lang => ({
+  return getKimiKupuLanguages().map(lang => ({
     value: lang.name,
-    label: lang.displayName
+    label: lang.config.language
   }))
 }
 
@@ -81,7 +81,7 @@ export const LanguageSelectionModal = ({
     }
     return { 
       interfaceLanguage: currentInterfaceLanguage || 'english', 
-      gameLanguage: currentSettings?.gameLanguage || 'hawaiian',
+      gameLanguage: currentSettings?.gameLanguage || '', // Start with no selection
       wordLength: currentSettings?.wordLength || 5
     }
   }
@@ -152,6 +152,12 @@ export const LanguageSelectionModal = ({
   }
 
   const handleOK = async () => {
+    // Validate that a game language is selected
+    if (!settings.gameLanguage) {
+      setLoadError('Please select a game language')
+      return
+    }
+
     setIsLoading(true)
     setLoadError(null)
 
@@ -195,49 +201,40 @@ export const LanguageSelectionModal = ({
         {/* Interface Language */}
         <div>
           <div className="font-bold mb-2 text-left">{settingsTexts.interfaceLanguage}</div>
-          <div className="flex flex-col space-y-2">
-            {interfaceLanguages.map(lang => {
-              const isDisabled = lang.value === 'maori' || isLoading;
-              return (
-                <label key={lang.value} className={`flex items-center ${isDisabled && lang.value === 'maori' ? 'opacity-50' : ''}`}>
-                  <input
-                    type="radio"
-                    name="interfaceLanguage"
-                    value={lang.value}
-                    checked={settings.interfaceLanguage === lang.value}
-                    onChange={() => handleInterfaceChange(lang.value)}
-                    className="h-4 w-4 text-indigo-600 border-gray-300"
-                    disabled={isDisabled}
-                  />
-                  <span className={`ml-3 text-sm ${isDisabled && lang.value === 'maori' ? 'text-gray-400' : 'text-gray-700'}`}>
-                    {lang.label}
-                    {lang.value === 'maori' && <span className="text-xs text-gray-400 ml-2">(coming soon)</span>}
-                  </span>
-                </label>
-              );
-            })}
-          </div>
+          <select
+            value={settings.interfaceLanguage}
+            onChange={(e) => handleInterfaceChange(e.target.value)}
+            disabled={isLoading}
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          >
+            {interfaceLanguages.map(lang => (
+              <option 
+                key={lang.value} 
+                value={lang.value}
+                disabled={lang.value === 'maori'}
+              >
+                {lang.label}{lang.value === 'maori' ? ' (coming soon)' : ''}
+              </option>
+            ))}
+          </select>
         </div>
         
         {/* Game Language */}
         <div>
           <div className="font-bold mb-2 text-left">{settingsTexts.gameLanguage}</div>
-          <div className="flex flex-col space-y-2">
+          <select
+            value={settings.gameLanguage}
+            onChange={(e) => handleGameChange(e.target.value)}
+            disabled={isLoading}
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          >
+            <option value="" disabled>Choose your language</option>
             {gameLanguages.map(lang => (
-              <label key={lang.value} className="flex items-center">
-                <input
-                  type="radio"
-                  name="gameLanguage"
-                  value={lang.value}
-                  checked={settings.gameLanguage === lang.value}
-                  onChange={() => handleGameChange(lang.value)}
-                  className="h-4 w-4 text-indigo-600 border-gray-300"
-                  disabled={isLoading}
-                />
-                <span className="ml-3 text-sm text-gray-700">{lang.label}</span>
-              </label>
+              <option key={lang.value} value={lang.value}>
+                {lang.label}
+              </option>
             ))}
-          </div>
+          </select>
         </div>
 
         {/* Word Length */}
