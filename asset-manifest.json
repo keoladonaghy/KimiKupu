@@ -1,19 +1,31 @@
 {
   "files": {
-    "main.css": "/KimiKupu/static/css/main.2e160418.css",
-    "main.js": "/KimiKupu/static/js/main.a739676e.js",
+    "main.css": "/KimiKupu/static/css/main.a2965186.css",
+    "main.js": "/KimiKupu/static/js/main.670fc5ca.js",
+    "static/js/665.b74021f8.chunk.js": "/KimiKupu/static/js/665.b74021f8.chunk.js",
+    "static/js/473.5fe67b05.chunk.js": "/KimiKupu/static/js/473.5fe67b05.chunk.js",
+    "static/js/39.35be4e80.chunk.js": "/KimiKupu/static/js/39.35be4e80.chunk.js",
+    "static/js/324.e6590cf6.chunk.js": "/KimiKupu/static/js/324.e6590cf6.chunk.js",
+    "static/js/804.688d42b8.chunk.js": "/KimiKupu/static/js/804.688d42b8.chunk.js",
+    "static/js/158.e35d17a3.chunk.js": "/KimiKupu/static/js/158.e35d17a3.chunk.js",
     "static/js/453.c6fe0752.chunk.js": "/KimiKupu/static/js/453.c6fe0752.chunk.js",
     "static/media/BCSans-Bold.woff": "/KimiKupu/static/media/BCSans-Bold.252ecf87ea37c93b293c.woff",
     "static/media/BCSans-BoldItalic.woff": "/KimiKupu/static/media/BCSans-BoldItalic.73ed5137b2c4a42b754f.woff",
     "static/media/BCSans-Italic.woff": "/KimiKupu/static/media/BCSans-Italic.9c3be03a06d30a6ecff0.woff",
     "static/media/BCSans-Regular.woff": "/KimiKupu/static/media/BCSans-Regular.0079ea8e42d4e81a13d2.woff",
     "index.html": "/KimiKupu/index.html",
-    "main.2e160418.css.map": "/KimiKupu/static/css/main.2e160418.css.map",
-    "main.a739676e.js.map": "/KimiKupu/static/js/main.a739676e.js.map",
+    "main.a2965186.css.map": "/KimiKupu/static/css/main.a2965186.css.map",
+    "main.670fc5ca.js.map": "/KimiKupu/static/js/main.670fc5ca.js.map",
+    "665.b74021f8.chunk.js.map": "/KimiKupu/static/js/665.b74021f8.chunk.js.map",
+    "473.5fe67b05.chunk.js.map": "/KimiKupu/static/js/473.5fe67b05.chunk.js.map",
+    "39.35be4e80.chunk.js.map": "/KimiKupu/static/js/39.35be4e80.chunk.js.map",
+    "324.e6590cf6.chunk.js.map": "/KimiKupu/static/js/324.e6590cf6.chunk.js.map",
+    "804.688d42b8.chunk.js.map": "/KimiKupu/static/js/804.688d42b8.chunk.js.map",
+    "158.e35d17a3.chunk.js.map": "/KimiKupu/static/js/158.e35d17a3.chunk.js.map",
     "453.c6fe0752.chunk.js.map": "/KimiKupu/static/js/453.c6fe0752.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.2e160418.css",
-    "static/js/main.a739676e.js"
+    "static/css/main.a2965186.css",
+    "static/js/main.670fc5ca.js"
   ]
 }

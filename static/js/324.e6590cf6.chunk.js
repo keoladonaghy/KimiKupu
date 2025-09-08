@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkReo_Moana_Words=self.webpackChunkReo_Moana_Words||[]).push([[324],{324:(a,o,n)=>{n.r(o),n.d(o,{default:()=>s});var e=n(308);const r=["a","\u0101","e","\u0113","i","\u012b","o","\u014d","u","\u016b","h","k","m","n","ng","p","r","t","w","wh"];e.P.normalization&&r.forEach((a,o)=>r[o]=a.normalize(e.P.normalization));const s=r}}]);
+//# sourceMappingURL=324.e6590cf6.chunk.js.map
