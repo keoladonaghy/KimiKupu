@@ -151,7 +151,7 @@ const AnimatedTitle = () => {
             z-index: -1;
             pointer-events: none;
             background: linear-gradient(
-              180deg,
+              135deg,
               #061428 0%,
               #0b2a3c 5%,
               #7fa9b4 50%,
