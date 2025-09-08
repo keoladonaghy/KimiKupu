@@ -30,6 +30,10 @@ const DEFINITION_USES = [
   { value: 'reveal', label: 'Reveal at end' },
 ]
 
+const DEFINITION_USES_DISABLED = [
+  { value: 'unavailable', label: 'No definitions available' },
+]
+
 const LANGUAGE_CODE_MAP: { [key: string]: string } = {
   'hawaiian': 'haw',
   'maori': 'mao',
@@ -123,7 +127,15 @@ export const LanguageSelectionModal = ({
   }
 
   const handleGameChange = (val: string) => {
-    setSettings(s => ({ ...s, gameLanguage: val }))
+    // Check if the new language has definitions available
+    const newLanguageData = getKimiKupuLanguages().find(lang => lang.name === val)
+    const hasDefinitions = newLanguageData?.features.definitions || false
+    
+    setSettings(s => ({ 
+      ...s, 
+      gameLanguage: val,
+      definitionUse: hasDefinitions ? s.definitionUse : 'unavailable'
+    }))
   }
 
   const handleWordLengthChange = (val: number) => {
@@ -276,24 +288,24 @@ export const LanguageSelectionModal = ({
           </div>
         </div>
 
-        {/* Definition Use - only show if definitions are available for selected language */}
-        {definitionsAvailable && (
-          <div>
-            <div className="font-bold mb-2 text-left">{settingsTexts.definitionUse}</div>
-            <select
-              value={settings.definitionUse}
-              onChange={(e) => handleDefinitionUseChange(e.target.value)}
-              disabled={isLoading}
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              {DEFINITION_USES.map(use => (
-                <option key={use.value} value={use.value}>
-                  {use.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
+        {/* Definition Use - always show, disabled when definitions unavailable */}
+        <div>
+          <div className="font-bold mb-2 text-left">{settingsTexts.definitionUse}</div>
+          <select
+            value={settings.definitionUse}
+            onChange={(e) => handleDefinitionUseChange(e.target.value)}
+            disabled={isLoading || !definitionsAvailable}
+            className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 ${
+              !definitionsAvailable ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : ''
+            }`}
+          >
+            {(definitionsAvailable ? DEFINITION_USES : DEFINITION_USES_DISABLED).map(use => (
+              <option key={use.value} value={use.value}>
+                {use.label}
+              </option>
+            ))}
+          </select>
+        </div>
 
         {/* Error Display */}
         {loadError && (
