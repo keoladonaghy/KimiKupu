@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunkReo_Moana_Words=self.webpackChunkReo_Moana_Words||[]).push([[665],{665:(o,a,e)=>{e.r(a),e.d(a,{CONFIG:()=>t});const t={tries:6,language:"Maori",wordLength:5,author:"keoladonaghy",authorWebsite:"http://keoladonaghy.com",wordListSource:"keoladonaghy",wordListSourceLink:"http://keoladonaghy.com",googleAnalytics:"UA-20295191-3",shuffle:!1,normalization:"NFC"}}}]);
-//# sourceMappingURL=665.b74021f8.chunk.js.map
