@@ -2,8 +2,22 @@
 import { LanguageData } from '../languages/types';
 
 export const validateGuess = (guess: string, languageData: LanguageData): boolean => {
-  return languageData.validGuesses.includes(guess.toLowerCase()) || 
-         languageData.words.includes(guess.toLowerCase());
+  const guessLower = guess.toLowerCase();
+  
+  // Check legacy validGuesses and words (5-letter only)
+  if (languageData.validGuesses.includes(guessLower) || 
+      languageData.words.includes(guessLower)) {
+    return true;
+  }
+  
+  // Check unified words for any length (covers 6-letter and beyond)
+  if (languageData.unifiedWords) {
+    return languageData.unifiedWords.some(entry => 
+      entry.word.toLowerCase() === guessLower
+    );
+  }
+  
+  return false;
 };
 
 export const getRandomWord = (languageData: LanguageData): string => {
