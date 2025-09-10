@@ -2,6 +2,7 @@ import { GameStats } from '../../lib/localStorage'
 import { shareStatus } from '../../lib/share'
 import { MiniGrid } from '../mini-grid/MiniGrid'
 import { BaseModal } from './BaseModal'
+import { useWordLength } from '../../hooks/useWordLength'
 
 type Props = {
   isOpen: boolean
@@ -28,6 +29,8 @@ export const StatsModal = ({
   orthography,
   definition,
 }: Props) => {
+  const { getMaxAttempts } = useWordLength()
+  
   if (gameStats.totalGames <= 0) {
     return (
       <BaseModal
@@ -129,7 +132,8 @@ export const StatsModal = ({
                   () => {}, // handleShareFailure
                   1, // gameNumber
                   solution,
-                  orthography
+                  orthography,
+                  getMaxAttempts()
                 )
                 handleShare()
               }}

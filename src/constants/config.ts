@@ -1,7 +1,7 @@
 export const CONFIG = {
   tries: 6, // This changes how many tries you get to finish the wordle
   language: 'Hawaiian', // This changes the display name for your language
-  wordLength: 5, // This sets how long each word is based on how many characters (as defined in orthography.ts) are in each word
+  wordLength: 5, // DEPRECATED: Word length is now determined by user selection in LanguageSelectionModal. Kept for reference and backwards compatibility.
   author: 'keoladonaghy', // Put your name here so people know who made this Wordle!
   authorWebsite: 'http://keoladonaghy.com', // Put a link to your website or social media here
   wordListSource: 'keoladonaghy', // Describe the source material for your words here

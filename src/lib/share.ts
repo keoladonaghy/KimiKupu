@@ -46,11 +46,12 @@ export const shareStatus = (
   handleShareFailure: () => void,
   gameNumber: number,
   solution: string,
-  orthography: string[]
+  orthography: string[],
+  maxAttempts: number
 ) => {
   const textToShare = `${
     process.env.REACT_APP_GAME_NAME
-  } ${gameNumber} ${lost ? 'X' : guesses.length}/6${
+  } ${gameNumber} ${lost ? 'X' : guesses.length}/${maxAttempts}${
     isHardMode ? '*' : ''
   }\n\n${generateEmojiGrid(guesses, solution, orthography)}`
 

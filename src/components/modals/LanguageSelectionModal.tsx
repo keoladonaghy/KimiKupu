@@ -154,18 +154,45 @@ export const LanguageSelectionModal = ({
     }
 
     try {
-      const [wordlistModule, configModule, orthographyModule, validGuessesModule] = await Promise.all([
-        import(`../../constants/wordlist.${languageCode}${wordLength}.ts`),
-        import(`../../constants/config.${languageCode}.ts`),
-        import(`../../constants/orthography.${languageCode}.ts`),
-        import(`../../constants/validGuesses.${languageCode}${wordLength}.ts`),
-      ])
+      // Use the new unified language system
+      const languageModule = await import(`../../languages/words.${languageCode}.ts`)
+      
+      // Extract words of the specified length from the unified word list
+      let allWords: any[] = []
+      
+      // Get the correct word array based on language
+      switch (languageCode) {
+        case 'haw':
+          allWords = languageModule.HAWAIIAN_WORDS || []
+          break
+        case 'mao':
+          allWords = languageModule.MAORI_WORDS || []
+          break
+        case 'tah':
+          allWords = languageModule.TAHITIAN_WORDS || []
+          break
+        case 'sam':
+          allWords = languageModule.SAMOAN_WORDS || []
+          break
+        default:
+          throw new Error(`Unsupported language code: ${languageCode}`)
+      }
+      
+      const wordlist = allWords
+        .filter((entry: any) => entry.word.length === wordLength)
+        .map((entry: any) => entry.word)
+      
+      const config = languageModule.CONFIG
+      const orthography = languageModule.ORTHOGRAPHY
+      
+      // For the new system, we don't need separate validGuesses - use the same wordlist
+      const validGuesses = wordlist
 
       return {
-        wordlist: wordlistModule.default || wordlistModule.WORDS,
-        config: configModule.default || configModule.CONFIG,
-        orthography: orthographyModule.default,
-        validGuesses: validGuessesModule.default || validGuessesModule.VALIDGUESSES,
+        wordlist,
+        config,
+        orthography,
+        validGuesses,
       }
     } catch (error) {
       console.error(`Failed to load language files for ${gameLanguage} ${wordLength}-letter:`, error)

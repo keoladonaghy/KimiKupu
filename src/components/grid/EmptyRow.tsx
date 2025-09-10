@@ -1,8 +1,9 @@
 import { Cell } from './Cell'
-import { CONFIG } from '../../constants/config'
+import { useWordLength } from '../../hooks/useWordLength'
 
 export const EmptyRow = () => {
-  const emptyCells = Array.from(Array(CONFIG.wordLength))
+  const { wordLength } = useWordLength()
+  const emptyCells = Array.from(Array(wordLength))
 
   return (
     <div className="flex justify-center mb-1">

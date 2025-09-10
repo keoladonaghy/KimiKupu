@@ -155,3 +155,138 @@ console.log('Deployed count:', getRegistryStats().statusBreakdown.deployed); // 
 **RESULT**: Players will only see Hawaiian in the menu, while you can still test other languages during development.
 
 **NO DEPLOYMENT NEEDED**: This is a UI-only change that uses the status system already committed to the codebase.
+
+---
+
+## 🔐 Data Protection & API Architecture Plan - January 10, 2025
+
+### **Problem Statement**
+Current language files contain valuable proprietary data that shouldn't be exposed on GitHub:
+- Frequency analysis from 433,435-word Hawaiian corpus
+- Algorithmic difficulty classifications
+- Cross-language research and linguistic analysis
+- Curated definitions and cultural context
+
+### **Solution: Public/Private Data Split**
+
+#### **Public Repository (Safe to expose)**
+```typescript
+// sequences.haw.ts - Only word IDs in predetermined order
+export const HAWAIIAN_WORD_SEQUENCES = {
+  5: [
+    "haw-12345", "haw-67890", "haw-23456", // ... all 5-letter word IDs shuffled
+  ],
+  6: [
+    "haw-78901", "haw-34567", "haw-89012", // ... all 6-letter word IDs shuffled
+  ]
+};
+```
+
+#### **Private API/Database (Protected proprietary data)**
+```typescript
+interface PrivateWordEntry {
+  id: string;                    // "haw-12345"
+  word: string;                  // "aloha"
+  definition: string;            // Full curated definition
+  wordCount: number;             // Exact frequency from corpus
+  difficulty: number;            // Algorithmic scoring
+  etymology?: string;            // Historical background
+  examples?: string[];           // Usage examples
+  culturalNotes?: string;        // Cultural significance
+  // ... all valuable proprietary research
+}
+```
+
+### **Game Flow Architecture**
+
+#### **Daily Word Selection (KimiKupu)**
+1. **Calculate daily index**: `daysSinceEpoch % sequenceLength`
+2. **Get word ID**: `HAWAIIAN_WORD_SEQUENCES[5][index]` → `"haw-12345"`
+3. **API call**: `GET /api/word/haw-12345` → rich word data
+4. **Game displays**: word + post-game educational content
+
+#### **Crossword Pool Selection (PangaKupu)**
+1. **Get sequence subset**: Multiple IDs for puzzle generation
+2. **API call**: `GET /api/words/crossword-pool?ids=haw-12345,haw-67890,...`
+3. **Diversity filtering**: Server-side using proprietary algorithms
+4. **Game receives**: Optimized word pool for puzzle generation
+
+### **Enhanced Post-Game Experience**
+
+```typescript
+// After game completion - educational content display
+const gameResult = {
+  wordId: "haw-12345", 
+  playerWon: true,
+  attempts: 4
+};
+
+// Fetch rich educational data
+const wordData = await fetch(`/api/word/${gameResult.wordId}`);
+const enrichedData = await wordData.json();
+
+// Display comprehensive learning content
+showGameResults({
+  word: enrichedData.word,           // "aloha"
+  definition: enrichedData.definition, // Full detailed meaning
+  etymology: enrichedData.etymology,   // Word origins
+  examples: enrichedData.examples,     // Usage in context
+  difficulty: enrichedData.difficulty, // Why this word was chosen
+  culturalNotes: enrichedData.cultural // Cultural significance
+});
+```
+
+### **Implementation Benefits**
+
+#### **Data Security**
+- **Frequency analysis** never leaves server
+- **Difficulty algorithms** remain proprietary
+- **Research methodology** stays private
+- **Bulk downloading** prevented
+
+#### **Educational Enhancement**
+- Rich post-game learning content
+- Cultural context and etymology
+- Pronunciation guides and examples
+- Progressive difficulty explanations
+
+#### **Future Flexibility**
+- Support for 5-letter and 6-letter daily games
+- Easy addition of new word lengths
+- Cross-language cognate features
+- Advanced analytics without data exposure
+
+### **Development Phases**
+
+#### **Phase 1: Create Public Sequences**
+- Extract word IDs by length from current files
+- Generate shuffled sequences for each word length
+- Create minimal public TypeScript files
+
+#### **Phase 2: Modify Game Logic**
+- Update KimiKupu to use ID sequences
+- Implement API calls for word data retrieval
+- Add post-game educational content display
+
+#### **Phase 3: API Development**
+- Build Flask/FastAPI with proprietary database
+- Implement authentication and rate limiting
+- Create endpoints for different game needs
+
+#### **Phase 4: Enhanced Features**
+- Server-side diversity filtering for PangaKupu
+- Cross-language cognate integration
+- Advanced educational content delivery
+
+### **Two-Games-Per-Day Feature**
+
+Both 5-letter and 6-letter games can run simultaneously:
+```typescript
+const today = getDaysSinceEpoch();
+const fiveLetterWordId = getDailyWordId(5, today);
+const sixLetterWordId = getDailyWordId(6, today);
+
+// Players get two daily challenges with rich educational content
+```
+
+This architecture transforms KimiKupu from a simple word game into a comprehensive language learning platform while protecting valuable research data.

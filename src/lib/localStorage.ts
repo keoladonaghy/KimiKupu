@@ -5,14 +5,14 @@ type StoredGameState = {
   solution: string
 }
 
-export const saveGameStateToLocalStorage = (gameState: StoredGameState, language: string) => {
-  const gameStateKeyWithLanguage = `${gameStateKey}_${language}`
-  localStorage.setItem(gameStateKeyWithLanguage, JSON.stringify(gameState))
+export const saveGameStateToLocalStorage = (gameState: StoredGameState, language: string, wordLength: number) => {
+  const gameStateKeyWithLanguageAndLength = `${gameStateKey}_${language}_${wordLength}`
+  localStorage.setItem(gameStateKeyWithLanguageAndLength, JSON.stringify(gameState))
 }
 
-export const loadGameStateFromLocalStorage = (language: string) => {
-  const gameStateKeyWithLanguage = `${gameStateKey}_${language}`
-  const state = localStorage.getItem(gameStateKeyWithLanguage)
+export const loadGameStateFromLocalStorage = (language: string, wordLength: number) => {
+  const gameStateKeyWithLanguageAndLength = `${gameStateKey}_${language}_${wordLength}`
+  const state = localStorage.getItem(gameStateKeyWithLanguageAndLength)
   return state ? (JSON.parse(state) as StoredGameState) : null
 }
 
@@ -28,18 +28,20 @@ export type GameStats = {
 }
 
 export type MultiLanguageStats = {
-  [language: string]: GameStats
+  [languageAndLength: string]: GameStats  // Keys like "hawaiian_5", "hawaiian_6"
 }
 
-export const saveStatsToLocalStorage = (gameStats: GameStats, language: string) => {
+export const saveStatsToLocalStorage = (gameStats: GameStats, language: string, wordLength: number) => {
   const existingStats = loadAllStatsFromLocalStorage()
-  existingStats[language] = gameStats
+  const key = `${language}_${wordLength}`
+  existingStats[key] = gameStats
   localStorage.setItem(gameStatKey, JSON.stringify(existingStats))
 }
 
-export const loadStatsFromLocalStorage = (language: string): GameStats | null => {
+export const loadStatsFromLocalStorage = (language: string, wordLength: number): GameStats | null => {
   const allStats = loadAllStatsFromLocalStorage()
-  return allStats[language] || null
+  const key = `${language}_${wordLength}`
+  return allStats[key] || null
 }
 
 export const loadAllStatsFromLocalStorage = (): MultiLanguageStats => {

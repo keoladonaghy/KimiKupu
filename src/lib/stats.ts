@@ -4,12 +4,14 @@ import { GameStats } from './localStorage'
 
 export const addStatsForCompletedGame = (
   gameStats: GameStats,
-  count: number
+  count: number,
+  wordLength: number
 ) => {
   // Count is number of incorrect guesses before end.
   const stats = { ...gameStats }
   stats.totalGames += 1
-  if (count > 5) {
+  const maxAttempts = wordLength + 1 // 5-letter = 6 attempts, 6-letter = 7 attempts
+  if (count >= maxAttempts) {
     // A fail situation
     stats.currentStreak = 0
     stats.gamesFailed += 1
@@ -25,17 +27,20 @@ export const addStatsForCompletedGame = (
   return stats
 }
 
-const defaultStats: GameStats = {
-  winDistribution: [0, 0, 0, 0, 0, 0],
-  gamesFailed: 0,
-  currentStreak: 0,
-  bestStreak: 0,
-  totalGames: 0,
-  successRate: 0,
+export const getDefaultStats = (wordLength: number): GameStats => {
+  const maxAttempts = wordLength + 1 // 5-letter = 6 attempts, 6-letter = 7 attempts
+  return {
+    winDistribution: Array(maxAttempts).fill(0),
+    gamesFailed: 0,
+    currentStreak: 0,
+    bestStreak: 0,
+    totalGames: 0,
+    successRate: 0,
+  }
 }
 
-export const loadStats = () => {
-  return defaultStats
+export const loadStats = (wordLength: number) => {
+  return getDefaultStats(wordLength)
 }
 
 const getSuccessRate = (gameStats: GameStats) => {

@@ -1,13 +1,14 @@
 import { Cell } from './Cell'
-import { CONFIG } from '../../constants/config'
+import { useWordLength } from '../../hooks/useWordLength'
 
 type Props = {
   guess: string[]
 }
 
 export const CurrentRow = ({ guess }: Props) => {
+  const { wordLength } = useWordLength()
   const splitGuess = guess
-  const emptyCells = Array.from(Array(CONFIG.wordLength - splitGuess.length))
+  const emptyCells = Array.from(Array(wordLength - splitGuess.length))
 
   return (
     <div className="flex justify-center mb-1">

@@ -1,6 +1,6 @@
 import { Cell } from '../grid/Cell'
 import { BaseModal } from './BaseModal'
-import { CONFIG } from '../../constants/config'
+import { useWordLength } from '../../hooks/useWordLength'
 
 type Props = {
   isOpen: boolean
@@ -8,14 +8,16 @@ type Props = {
 }
 
 export const InfoModal = ({ isOpen, handleClose }: Props) => {
+  const { getMaxAttempts } = useWordLength()
+  
   return (
     <BaseModal
-      title="Pehea e pā‘ani ai - How to play"
+      title="Pehea e pā'ani ai - How to play"
       isOpen={isOpen}
       handleClose={handleClose}
     >
       <p className="text-sm text-gray-500">
-        Guess the word in {CONFIG.tries} tries. After each guess, the color of
+        Guess the word in {getMaxAttempts()} tries. After each guess, the color of
         the tiles will change to show how close your guess was to the word.
       </p>
 

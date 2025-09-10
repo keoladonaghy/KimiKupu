@@ -24,6 +24,7 @@ import {
 } from './lib/localStorage'
 import { useLanguage } from './hooks/useLanguage'
 import { useInterfaceLanguage } from './hooks/useInterfaceLanguage'
+import { useWordLength } from './hooks/useWordLength'
 import { validateGuess } from './utils/gameHelpers'
 import { getAllLanguageNames } from './languages/registry'
 
@@ -43,6 +44,8 @@ type GameSettings = {
 
 function App() {
   console.log('DEBUG: App started')
+
+  const { wordLength, getMaxAttempts } = useWordLength()
 
   const getInitialGameLanguage = () => {
     const stored = loadLanguageFromLocalStorage()
@@ -88,7 +91,7 @@ function App() {
   )
   const [gameSettings, setGameSettings] = useState<GameSettings>({
     gameLanguage: getInitialGameLanguage(),
-    wordLength: 5,
+    wordLength: wordLength, // Use dynamic word length from hook
   })
 
   const currentConfig = languageData?.config || DEFAULT_CONFIG
@@ -127,7 +130,9 @@ function App() {
   const [currentSolution, setCurrentSolution] = useState<string>('')
   const [currentDefinition, setCurrentDefinition] = useState<string>('')
   const [stats, setStats] = useState(
-    () => loadStatsFromLocalStorage(selectedLanguage) || loadStats()
+    () =>
+      loadStatsFromLocalStorage(selectedLanguage, wordLength) ||
+      loadStats(wordLength)
   )
 
   const getWordOfDay = (words: string[], unifiedWords?: any[]) => {
@@ -163,7 +168,7 @@ function App() {
 
   const handleGameLanguageChange = async (gameLanguage: string) => {
     await changeLanguage(gameLanguage)
-    setGameSettings({ gameLanguage, wordLength: 5 })
+    setGameSettings({ gameLanguage, wordLength: wordLength })
 
     setGuesses([])
     setCurrentGuess([])
@@ -184,7 +189,7 @@ function App() {
 
   useEffect(() => {
     if (languageData && currentWords.length > 0 && currentSolution) {
-      const loaded = loadGameStateFromLocalStorage(selectedLanguage)
+      const loaded = loadGameStateFromLocalStorage(selectedLanguage, wordLength)
       if (loaded?.solution !== currentSolution) {
         setGuesses([])
         setIsGameWon(false)
@@ -206,16 +211,17 @@ function App() {
 
       setGuesses(loaded.guesses)
     }
-  }, [languageData, currentSolution, currentWords, currentConfig.tries])
+  }, [languageData, currentSolution, currentWords, wordLength])
 
   useEffect(() => {
     if (currentSolution) {
       saveGameStateToLocalStorage(
         { guesses, solution: currentSolution },
-        selectedLanguage
+        selectedLanguage,
+        wordLength
       )
     }
-  }, [guesses, currentSolution])
+  }, [guesses, currentSolution, wordLength])
 
   useEffect(() => {
     if (currentConfig.googleAnalytics && process.env.NODE_ENV !== 'test') {
@@ -233,9 +239,10 @@ function App() {
   }, [isGameWon, isGameLost])
 
   const onChar = (value: string) => {
+    const maxAttempts = getMaxAttempts()
     if (
-      currentGuess.length < currentConfig.wordLength &&
-      guesses.length < currentConfig.tries &&
+      currentGuess.length < wordLength &&
+      guesses.length < maxAttempts &&
       !isGameWon
     ) {
       // Split multi-character inputs like "ng" and "wh" into individual characters
@@ -243,7 +250,7 @@ function App() {
       let newGuess = [...currentGuess]
 
       for (const char of chars) {
-        if (newGuess.length < currentConfig.wordLength) {
+        if (newGuess.length < wordLength) {
           newGuess.push(char)
         }
       }
@@ -260,7 +267,7 @@ function App() {
     if (isGameWon || isGameLost) {
       return
     }
-    if (!(currentGuess.length === currentConfig.wordLength)) {
+    if (!(currentGuess.length === wordLength)) {
       setIsNotEnoughLetters(true)
       return setTimeout(() => {
         setIsNotEnoughLetters(false)
@@ -278,26 +285,35 @@ function App() {
 
     const winningWord = isWinningWord(guessWord)
 
+    const maxAttempts = getMaxAttempts()
     if (
-      currentGuess.length === currentConfig.wordLength &&
-      guesses.length < currentConfig.tries &&
+      currentGuess.length === wordLength &&
+      guesses.length < maxAttempts &&
       !isGameWon
     ) {
       setGuesses([...guesses, currentGuess])
       setCurrentGuess([])
 
       if (winningWord) {
-        const newStats = addStatsForCompletedGame(stats, guesses.length)
+        const newStats = addStatsForCompletedGame(
+          stats,
+          guesses.length,
+          wordLength
+        )
         setStats(newStats)
-        saveStatsToLocalStorage(newStats, selectedLanguage)
+        saveStatsToLocalStorage(newStats, selectedLanguage, wordLength)
         setIsGameWon(true)
         return
       }
 
-      if (guesses.length === currentConfig.tries - 1) {
-        const newStats = addStatsForCompletedGame(stats, guesses.length + 1)
+      if (guesses.length === maxAttempts - 1) {
+        const newStats = addStatsForCompletedGame(
+          stats,
+          guesses.length + 1,
+          wordLength
+        )
         setStats(newStats)
-        saveStatsToLocalStorage(newStats, selectedLanguage)
+        saveStatsToLocalStorage(newStats, selectedLanguage, wordLength)
         setIsGameLost(true)
       }
     }
@@ -308,7 +324,9 @@ function App() {
     console.log('DEBUG: Language length:', language.length)
     console.log('DEBUG: handleLanguageChange called with:', language)
     setSelectedLanguage(language)
-    setStats(loadStatsFromLocalStorage(language) || loadStats())
+    setStats(
+      loadStatsFromLocalStorage(language, wordLength) || loadStats(wordLength)
+    )
 
     const gameLanguages = getAllLanguageNames()
     console.log('DEBUG: Available game languages:', gameLanguages)
