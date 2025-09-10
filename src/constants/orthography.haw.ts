@@ -13,12 +13,12 @@ const ORTHOGRAPHY = [
   'ū',
   'h',
   'k',
+  '‘',
   'l',
   'm',
   'n',
   'p',
   'w',
-  '‘',
 ]
 
 if (CONFIG.normalization) {
