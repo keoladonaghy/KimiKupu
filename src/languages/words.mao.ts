@@ -920,6 +920,134 @@ export const MAORI_WORDS: WordEntry[] = [
     definition: "throw, cast",
     wordCount: "1-10",
     uniqueId: "mao_148"
+  },
+  
+  // 6-letter Māori words from KupuMaori.txt
+  {
+    word: "ākonga",
+    definition: "6-letter word",
+    wordCount: "1-10",
+    uniqueId: "mao_149"
+  },
+  {
+    word: "awatea",
+    definition: "6-letter word",
+    wordCount: "1-10",
+    uniqueId: "mao_150"
+  },
+  {
+    word: "āwhina",
+    definition: "6-letter word",
+    wordCount: "1-10",
+    uniqueId: "mao_151"
+  },
+  {
+    word: "engari",
+    definition: "6-letter word",
+    wordCount: "1-10",
+    uniqueId: "mao_152"
+  },
+  {
+    word: "hākari",
+    definition: "6-letter word",
+    wordCount: "1-10",
+    uniqueId: "mao_153"
+  },
+  {
+    word: "hāmama",
+    definition: "6-letter word",
+    wordCount: "1-10",
+    uniqueId: "mao_154"
+  },
+  {
+    word: "hāngai",
+    definition: "6-letter word",
+    wordCount: "1-10",
+    uniqueId: "mao_155"
+  },
+  {
+    word: "haruru",
+    definition: "6-letter word",
+    wordCount: "1-10",
+    uniqueId: "mao_156"
+  },
+  {
+    word: "haunga",
+    definition: "6-letter word",
+    wordCount: "1-10",
+    uniqueId: "mao_157"
+  },
+  {
+    word: "hāunga",
+    definition: "6-letter word",
+    wordCount: "1-10",
+    uniqueId: "mao_158"
+  },
+  {
+    word: "hauora",
+    definition: "6-letter word",
+    wordCount: "1-10",
+    uniqueId: "mao_159"
+  },
+  {
+    word: "haurua",
+    definition: "6-letter word",
+    wordCount: "1-10",
+    uniqueId: "mao_160"
+  },
+  {
+    word: "heihei",
+    definition: "6-letter word",
+    wordCount: "1-10",
+    uniqueId: "mao_161"
+  },
+  {
+    word: "hiahia",
+    definition: "6-letter word",
+    wordCount: "1-10",
+    uniqueId: "mao_162"
+  },
+  {
+    word: "hōhonu",
+    definition: "6-letter word",
+    wordCount: "1-10",
+    uniqueId: "mao_163"
+  },
+  {
+    word: "hokona",
+    definition: "6-letter word",
+    wordCount: "1-10",
+    uniqueId: "mao_164"
+  },
+  {
+    word: "kāhore",
+    definition: "6-letter word",
+    wordCount: "1-10",
+    uniqueId: "mao_165"
+  },
+  {
+    word: "kaiako",
+    definition: "6-letter word",
+    wordCount: "1-10",
+    uniqueId: "mao_166"
+  },
+  {
+    word: "kainga",
+    definition: "6-letter word",
+    wordCount: "1-10",
+    uniqueId: "mao_167"
+  },
+  {
+    word: "kāinga",
+    definition: "6-letter word",
+    wordCount: "1-10",
+    uniqueId: "mao_168"
+  },
+  {
+    word: "kaikōrero",
+    definition: "6-letter word",  
+    wordCount: "1-10",
+    uniqueId: "mao_169"
   }
 ];
 
