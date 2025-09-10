@@ -54,6 +54,28 @@ export const useWordLength = () => {
     return () => window.removeEventListener('storage', handleStorageChange)
   }, [])
 
+  // Also check for changes by polling localStorage periodically (for same-tab updates)
+  useEffect(() => {
+    const checkForUpdates = () => {
+      try {
+        const stored = localStorage.getItem(WORD_LENGTH_STORAGE_KEY)
+        if (stored) {
+          const settings: LanguageSettings = JSON.parse(stored)
+          if (settings.wordLength && (settings.wordLength === 5 || settings.wordLength === 6)) {
+            if (settings.wordLength !== wordLength) {
+              setWordLengthState(settings.wordLength)
+            }
+          }
+        }
+      } catch (error) {
+        // Ignore parsing errors
+      }
+    }
+
+    const interval = setInterval(checkForUpdates, 100) // Check every 100ms
+    return () => clearInterval(interval)
+  }, [wordLength])
+
   // Function to update wordLength (will update localStorage and trigger re-renders)
   const setWordLength = (newWordLength: number) => {
     if (newWordLength !== 5 && newWordLength !== 6) {

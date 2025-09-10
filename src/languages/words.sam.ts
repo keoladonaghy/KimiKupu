@@ -16,6 +16,9 @@ import {
 
 import { LanguageConfig } from './frequency-types';
 
+// Import orthography from dedicated file
+import ORTHOGRAPHY_IMPORT from '../constants/orthography.sam';
+
 // Samoan config - ready for frequency data when available
 export const CONFIG: LanguageConfig = {
   tries: 6,
@@ -44,15 +47,8 @@ export const CONFIG: LanguageConfig = {
   normalization: 'NFC',
 };
 
-// Embedded orthography data
-const ORTHOGRAPHY_BASE = [
-  'a', 'ā', 'e', 'ē', 'i', 'ī', 'o', 'ō', 'u', 'ū',
-  'f', 'g', 'l', 'm', 'n', 'p', 's', 't', 'v', 'ʻ'
-];
-
-export const ORTHOGRAPHY = CONFIG.normalization 
-  ? ORTHOGRAPHY_BASE.map(val => val.normalize(CONFIG.normalization as string))
-  : ORTHOGRAPHY_BASE;
+// Use orthography from dedicated file
+export const ORTHOGRAPHY = ORTHOGRAPHY_IMPORT;
 
 export const SAMOAN_WORDS: WordEntry[] = [
   // Sample Samoan words - ready to add frequency data when available

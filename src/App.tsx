@@ -94,6 +94,14 @@ function App() {
     wordLength: wordLength, // Use dynamic word length from hook
   })
 
+  // Update gameSettings when wordLength changes
+  useEffect(() => {
+    setGameSettings((prev) => ({
+      ...prev,
+      wordLength: wordLength,
+    }))
+  }, [wordLength])
+
   const currentConfig = languageData?.config || DEFAULT_CONFIG
 
   const currentWords = useMemo(() => languageData?.words || [], [languageData])

@@ -16,18 +16,14 @@ import {
 
 import { TAHITIAN_CONFIG } from './frequency-types';
 
+// Import orthography from dedicated file
+import ORTHOGRAPHY_IMPORT from '../constants/orthography.tah';
+
 // Use the flexible LanguageConfig system
 export const CONFIG = TAHITIAN_CONFIG;
 
-// Embedded orthography data
-const ORTHOGRAPHY_BASE = [
-  'a', 'ā', 'e', 'ē', 'i', 'ī', 'o', 'ō', 'u', 'ū',
-  'f', 'h', 'm', 'n', 'p', 'r', 't', 'v', 'ʻ'
-];
-
-export const ORTHOGRAPHY = CONFIG.normalization 
-  ? ORTHOGRAPHY_BASE.map(val => val.normalize(CONFIG.normalization as string))
-  : ORTHOGRAPHY_BASE;
+// Use orthography from dedicated file
+export const ORTHOGRAPHY = ORTHOGRAPHY_IMPORT;
 
 export const TAHITIAN_WORDS: WordEntry[] = [
   // All words with no frequency data (wordCount: null)

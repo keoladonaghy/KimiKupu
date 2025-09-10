@@ -16,18 +16,14 @@ import {
 
 import { MAORI_CONFIG } from './frequency-types';
 
+// Import orthography from dedicated file
+import ORTHOGRAPHY_IMPORT from '../constants/orthography.mao';
+
 // Use the flexible LanguageConfig system
 export const CONFIG = MAORI_CONFIG;
 
-// Embedded orthography data
-const ORTHOGRAPHY_BASE = [
-  'a', 'ā', 'e', 'ē', 'i', 'ī', 'o', 'ō', 'u', 'ū',
-  'h', 'k', 'l', 'm', 'n', 'p', 'r', 't', 'w', 'wh', 'ng'
-];
-
-export const ORTHOGRAPHY = CONFIG.normalization 
-  ? ORTHOGRAPHY_BASE.map(val => val.normalize(CONFIG.normalization as string))
-  : ORTHOGRAPHY_BASE;
+// Use orthography from dedicated file
+export const ORTHOGRAPHY = ORTHOGRAPHY_IMPORT;
 
 export const MAORI_WORDS: WordEntry[] = [
   // High frequency words (1000+ occurrences)

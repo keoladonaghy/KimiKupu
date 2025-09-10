@@ -11,16 +11,14 @@ const ORTHOGRAPHY = [
   'ī',
   'ō',
   'ū',
-  'f',
-  'g',
+  'h',
+  'k',
   'l',
   'm',
   'n',
   'p',
-  's',
-  't',
-  'v',
-  'ʻ',
+  'w',
+  '‘',
 ]
 
 if (CONFIG.normalization) {
