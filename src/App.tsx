@@ -104,7 +104,14 @@ function App() {
 
   const currentConfig = languageData?.config || DEFAULT_CONFIG
 
-  const currentWords = useMemo(() => languageData?.words || [], [languageData])
+  const currentWords = useMemo(() => {
+    if (!languageData?.unifiedWords) return languageData?.words || []
+
+    // Filter unified words by current word length, then extract word strings
+    return languageData.unifiedWords
+      .filter((entry) => entry.word.length === wordLength)
+      .map((entry) => entry.word.toLowerCase())
+  }, [languageData, wordLength])
 
   const currentOrthography = languageData?.orthography || [
     'A',
@@ -167,7 +174,13 @@ function App() {
   }
 
   const isWordInWordList = (word: string) => {
-    return languageData ? validateGuess(word, languageData) : false
+    if (!languageData) return false
+
+    // Check against current length-filtered words
+    if (currentWords.includes(word.toLowerCase())) return true
+
+    // Also check against legacy validation system for backwards compatibility
+    return validateGuess(word, languageData)
   }
 
   const isWinningWord = (word: string) => {
