@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/KimiKupu/static/css/main.d762eea7.css",
-    "main.js": "/KimiKupu/static/js/main.892a44cf.js",
+    "main.js": "/KimiKupu/static/js/main.1ee7a74e.js",
     "static/js/177.304e1522.chunk.js": "/KimiKupu/static/js/177.304e1522.chunk.js",
     "static/js/453.104d9a2c.chunk.js": "/KimiKupu/static/js/453.104d9a2c.chunk.js",
     "static/media/BCSans-Bold.woff": "/KimiKupu/static/media/BCSans-Bold.252ecf87ea37c93b293c.woff",
@@ -10,12 +10,12 @@
     "static/media/BCSans-Regular.woff": "/KimiKupu/static/media/BCSans-Regular.0079ea8e42d4e81a13d2.woff",
     "index.html": "/KimiKupu/index.html",
     "main.d762eea7.css.map": "/KimiKupu/static/css/main.d762eea7.css.map",
-    "main.892a44cf.js.map": "/KimiKupu/static/js/main.892a44cf.js.map",
+    "main.1ee7a74e.js.map": "/KimiKupu/static/js/main.1ee7a74e.js.map",
     "177.304e1522.chunk.js.map": "/KimiKupu/static/js/177.304e1522.chunk.js.map",
     "453.104d9a2c.chunk.js.map": "/KimiKupu/static/js/453.104d9a2c.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.d762eea7.css",
-    "static/js/main.892a44cf.js"
+    "static/js/main.1ee7a74e.js"
   ]
 }
